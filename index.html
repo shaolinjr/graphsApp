@@ -3,11 +3,12 @@
 <head>
   <title>math.js | plot</title>
   <meta charset="utf-8">
-  <script src="js/math.js"></script>
+
 
   <!-- load http://maurizzzio.github.io/function-plot/ -->
   <script src="js/d3.min.js"></script>
   <script src="js/function-plot.js"></script>
+  <script src="js/math.js"></script>
   <style type="text/css" rel="stylesheet" href="css/bootstrap.css"></style>
   <style type="text/css" rel="stylesheet" href="css/bootstrap-theme.css"></style>
 
@@ -30,13 +31,18 @@
 </head>
 <body>
 
-<form id="form">
+<form id="graph-form">
   <label for="eq">Digite a equação:</label>
   <input type="text" id="eq" placeholder="4 * sin(x) + 5 * cos(x/2)" />
   <br>
-  <label for="limit-to">Digite o valor para calcular o limite:</label>
-  <input type="text" id="limit-to" placeholder="2" />
   <input type="submit" value="Draw" />
+</form>
+
+<form id="limit-form">
+  <label for="eq">Digite a equação:</label>
+  <input type="text" id="x-to-limit" placeholder="2" />
+  <br>
+  <input type="submit" name="limit" value="Calcular Limite">
 </form>
 
 <div id="plot"></div>
@@ -47,23 +53,88 @@
 </p>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script src="js/bootstrap.js"></script>
-<script src="js/graphFactory.js"></script>
-<script src="js/formatLimitResult.js"></script>
-<script src="js/calculateLimit.js"></script>
-<script>
+<script src="js/require.js"></script>
 
-  let graphFactory = new GraphFactory("#eq");
-  let equation = document.querySelector("#eq");
-  let limitTendence = document.querySelector("#limit-to");
-  let calculateLimit = new CalculateLimit(equation, limitTendence);
-  document.getElementById('form').onsubmit = function (event) {
+<script src="js/graphFactory.js"></script>
+<!-- <script src="js/formatLimitResult.js"></script>
+<script src="js/calculateLimit.js"></script> -->
+<script>
+function decimalToFraction (limitResult){
+  resultLenght = limitResult.length;
+  result = parseInt(limitResult);
+  if (result > 0){
+    result = `${result}/${Math.pow(10,resultLenght)}`;
+  }else {
+    result =`${result}/${Math.pow(10,resultLenght)}`;
+  }
+  return result;
+}
+
+function calculateLimit (equation, xToLimit){
+  // pegamos a equação e subtituimos o 'x' pelo valor do limite e damos o parse.eval
+  // se der número decimal, tentamos transformar em fração
+  parser = math.parser();
+  result = parser.eval("f(x)="+equation);
+  result = parser.eval("f("+xToLimit+")");
+  // console.log("Result: "+result)
+  result = parseInt(math.format(math.eval(result), {precision:6}));
+  // console.log("Result_2: "+result)
+
+  if (result > 0 && !Number.isInteger(result)){
+    result = result.toString().substring(2);
+    result = decimalToFraction(result);
+  }else if (isNaN(result)){
+    // deu indeterminação
+    result = "0/0 (INDETERMINAÇÃO)";
+  }
+  else if (result < 0 && !Number.isInteger(result)){
+    result = result.toString().substring(3);
+    result = decimalToFraction(result);
+  }
+
+
+  return result;
+}
+
+function drawGraph(equationId){
+  try {
+    functionPlot({
+      target: '#plot',
+      data: [{
+        fn: document.querySelector(equationId).value,
+        sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
+        graphType: 'polyline'
+      }]
+    });
+  }
+  catch (err) {
+    console.log(err);
+    alert(err);
+  }
+}
+
+  document.getElementById('graph-form').onsubmit = function (event) {
 
     event.preventDefault();
-    graphFactory.draw();
-    document.querySelector("#limit-result").textContent = `O valor do limite é: ${calculateLimit.calculate()}`;
+    drawGraph("#eq");
 
+    // document.querySelector("#limit-result").textContent = `O valor do limite é: ${calculateLimit.calculate()}`;
   };
 
+  document.getElementById('limit-form').onsubmit = function (event) {
+
+    event.preventDefault();
+    let equation = document.querySelector("#eq").value;
+    let xToLimit = document.querySelector("#x-to-limit").value;
+    let limit = calculateLimit(equation, xToLimit);
+
+
+      document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
+
+
+
+
+  }
 </script>
 
 </body>
