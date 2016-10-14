@@ -35,11 +35,11 @@
   <label for="eq">Digite a equação:</label>
   <input type="text" id="eq" placeholder="4 * sin(x) + 5 * cos(x/2)" />
   <br>
-  <input type="submit" value="Draw" />
+  <input type="submit" value="Plotar gráfico" />
 </form>
 
 <form id="limit-form">
-  <label for="eq">Digite a equação:</label>
+  <label for="eq">Digite o valor para calcular o limite:</label>
   <input type="text" id="x-to-limit" placeholder="2" />
   <br>
   <input type="submit" name="limit" value="Calcular Limite">
@@ -53,45 +53,50 @@
 </p>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script src="js/bootstrap.js"></script>
-<script src="js/require.js"></script>
-
-<script src="js/graphFactory.js"></script>
+<!-- <script src="js/require.js"></script> -->
+<script src="js/Ratio-0.4.1.min.js"></script>
+<!-- <script src="js/graphFactory.js"></script> -->
 <!-- <script src="js/formatLimitResult.js"></script>
 <script src="js/calculateLimit.js"></script> -->
 <script>
-function decimalToFraction (limitResult){
-  resultLenght = limitResult.length;
-  result = parseInt(limitResult);
-  if (result > 0){
-    result = `${result}/${Math.pow(10,resultLenght)}`;
-  }else {
-    result =`${result}/${Math.pow(10,resultLenght)}`;
-  }
-  return result;
-}
+
 
 function calculateLimit (equation, xToLimit){
-  // pegamos a equação e subtituimos o 'x' pelo valor do limite e damos o parse.eval
-  // se der número decimal, tentamos transformar em fração
   parser = math.parser();
-  result = parser.eval("f(x)="+equation);
-  result = parser.eval("f("+xToLimit+")");
-  // console.log("Result: "+result)
-  result = parseInt(math.format(math.eval(result), {precision:6}));
-  // console.log("Result_2: "+result)
 
-  if (result > 0 && !Number.isInteger(result)){
-    result = result.toString().substring(2);
-    result = decimalToFraction(result);
+  if (equation.indexOf('/') >=0){
+    // temos que pegar a equação antes da barra e a equação depois da barra para dar eval separado
+    // result = numerador + '/'+ denominador
+    // em seguida mandamos o Ratio simplificar..\
+
+    // separamos as equações
+    numerador   = equation.split("/")[0].replace("(","").replace(")","");
+    denominador = equation.split("/")[1].replace("(","").replace(")","");
+
+    // validamos e calculamos os valores dos limites
+    numerador   = parser.eval("f(x)="+numerador);
+    numerador   = parser.eval("f("+xToLimit+")");
+
+    denominador = parser.eval("f(x)="+denominador);
+    denominador = parser.eval("f("+xToLimit+")");
+
+    // montamos o resultado
+    result = numerador + "/" + denominador;
+  }
+  else{
+    result = parser.eval("f(x)="+equation);
+    result = parser.eval("f("+xToLimit+")");
+  }
+
+  if (!Number.isInteger(result) && typeof result != "string"){
+    // result = result.toString().substring(2);
+    // result = decimalToFraction(result);
+    // usar o Ratio
+    result = Ratio.parse(result).simplify();
   }else if (isNaN(result)){
     // deu indeterminação
-    result = "0/0 (INDETERMINAÇÃO)";
+    result = "0/0 (Indeterminação matemátic)";
   }
-  else if (result < 0 && !Number.isInteger(result)){
-    result = result.toString().substring(3);
-    result = decimalToFraction(result);
-  }
-
 
   return result;
 }
@@ -127,12 +132,7 @@ function drawGraph(equationId){
     let equation = document.querySelector("#eq").value;
     let xToLimit = document.querySelector("#x-to-limit").value;
     let limit = calculateLimit(equation, xToLimit);
-
-
-      document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
-
-
-
+    document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
 
   }
 </script>
