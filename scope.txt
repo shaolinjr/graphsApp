@@ -1,0 +1,6 @@
+// Funcionalidades
+  -> Calcular limite
+  -> Plotar gráfico
+  -> Calcular derivada
+  -> Calcular função inversa e plotar no gráfico
+  

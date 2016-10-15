@@ -53,71 +53,80 @@
 </p>
 <script type="text/javascript" src="js/jquery.js"></script>
 <script src="js/bootstrap.js"></script>
-<!-- <script src="js/require.js"></script> -->
 <script src="js/Ratio-0.4.1.min.js"></script>
-<!-- <script src="js/graphFactory.js"></script> -->
-<!-- <script src="js/formatLimitResult.js"></script>
-<script src="js/calculateLimit.js"></script> -->
+<script type="text/javascript" src="js/nerdamer.core.js"></script>
+<script type="text/javascript" src="js/Calculus.js"></script>
+
 <script>
 
 
-function calculateLimit (equation, xToLimit){
-  parser = math.parser();
+  function calculateLimit (equation, xToLimit){
+    parser = math.parser();
 
-  if (equation.indexOf('/') >=0){
-    // temos que pegar a equação antes da barra e a equação depois da barra para dar eval separado
-    // result = numerador + '/'+ denominador
-    // em seguida mandamos o Ratio simplificar..\
+    if (equation.indexOf('/') >=0){
+      // temos que pegar a equação antes da barra e a equação depois da barra para dar eval separado
+      // result = numerador + '/'+ denominador
+      // em seguida mandamos o Ratio simplificar..\
 
-    // separamos as equações
-    numerador   = equation.split("/")[0].replace("(","").replace(")","");
-    denominador = equation.split("/")[1].replace("(","").replace(")","");
+      // separamos as equações
+      numerador   = equation.split("/")[0].replace("(","").replace(")","");
+      denominador = equation.split("/")[1].replace("(","").replace(")","");
 
-    // validamos e calculamos os valores dos limites
-    numerador   = parser.eval("f(x)="+numerador);
-    numerador   = parser.eval("f("+xToLimit+")");
+      // validamos e calculamos os valores dos limites
+      numerador   = parser.eval("f(x)="+numerador);
+      numerador   = parser.eval("f("+xToLimit+")");
 
-    denominador = parser.eval("f(x)="+denominador);
-    denominador = parser.eval("f("+xToLimit+")");
+      denominador = parser.eval("f(x)="+denominador);
+      denominador = parser.eval("f("+xToLimit+")");
 
-    // montamos o resultado
-    result = numerador + "/" + denominador;
+      // montamos o resultado
+      result = numerador + "/" + denominador;
+    }
+    else{
+      result = parser.eval("f(x)="+equation);
+      result = parser.eval("f("+xToLimit+")");
+    }
+
+    if (!Number.isInteger(result) && typeof result != "string"){
+      // result = result.toString().substring(2);
+      // result = decimalToFraction(result);
+      // usar o Ratio
+      result = Ratio.parse(result).simplify();
+    }else if (isNaN(result)){
+      // deu indeterminação
+      result = "0/0 (Indeterminação matemátic)";
+    }
+
+    return result;
   }
-  else{
-    result = parser.eval("f(x)="+equation);
-    result = parser.eval("f("+xToLimit+")");
+
+  function drawGraph(equationId){
+    try {
+      functionPlot({
+        target: '#plot',
+        data: [{
+          fn: document.querySelector(equationId).value,
+          sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
+          graphType: 'polyline'
+        }]
+      });
+    }
+    catch (err) {
+      console.log(err);
+      alert(err);
+    }
+  }
+  /*
+  */
+  function calculateDerivative (equation, symbol){
+    var derivative = nerdamer (`diff(${equation},x)`);
+    console.log(`Derivada de ${equation} é : ${derivative.text()}`)
   }
 
-  if (!Number.isInteger(result) && typeof result != "string"){
-    // result = result.toString().substring(2);
-    // result = decimalToFraction(result);
-    // usar o Ratio
-    result = Ratio.parse(result).simplify();
-  }else if (isNaN(result)){
-    // deu indeterminação
-    result = "0/0 (Indeterminação matemátic)";
+  function invertFunction (equation){
+    var invert = nerdamer().invert(equation);
+    console.log(invert);
   }
-
-  return result;
-}
-
-function drawGraph(equationId){
-  try {
-    functionPlot({
-      target: '#plot',
-      data: [{
-        fn: document.querySelector(equationId).value,
-        sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
-        graphType: 'polyline'
-      }]
-    });
-  }
-  catch (err) {
-    console.log(err);
-    alert(err);
-  }
-}
-
   document.getElementById('graph-form').onsubmit = function (event) {
 
     event.preventDefault();
@@ -133,6 +142,8 @@ function drawGraph(equationId){
     let xToLimit = document.querySelector("#x-to-limit").value;
     let limit = calculateLimit(equation, xToLimit);
     document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
+    calculateDerivative(equation)
+    invertFunction(equation);
 
   }
 </script>
