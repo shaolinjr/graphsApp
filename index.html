@@ -99,15 +99,25 @@
 
     return result;
   }
-
+  function calculateDerivative (equation, symbol){
+    var derivative = nerdamer (`diff(${equation},x)`);
+    console.log(`Derivada de ${equation} é : ${derivative.text()}`)
+    return derivative.toString();
+  }
   function drawGraph(equationId){
+    let func = document.querySelector(equationId).value;
     try {
       functionPlot({
         target: '#plot',
         data: [{
-          fn: document.querySelector(equationId).value,
+          fn: func,
           sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
-          graphType: 'polyline'
+          graphType: 'polyline',
+          derivative:{
+            fn: calculateDerivative(func, "x"),
+            // x0: 2,
+            updateOnMouseMove:true
+          }
         }]
       });
     }
@@ -118,10 +128,7 @@
   }
   /*
   */
-  function calculateDerivative (equation, symbol){
-    var derivative = nerdamer (`diff(${equation},x)`);
-    console.log(`Derivada de ${equation} é : ${derivative.text()}`)
-  }
+
 
   // function invertFunction (equation){
   //   var invert = nerdamer().invert(equation);
@@ -143,7 +150,7 @@
     let limit = calculateLimit(equation, xToLimit);
     document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
     calculateDerivative(equation)
-    invertFunction(equation);
+
 
   }
 </script>
