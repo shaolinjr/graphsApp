@@ -11,6 +11,11 @@
   <script src="js/math.js"></script>
   <style type="text/css" rel="stylesheet" href="css/bootstrap.css"></style>
   <style type="text/css" rel="stylesheet" href="css/bootstrap-theme.css"></style>
+  <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.3/MathJax.js?config=default.js"></script>-->
+  <script type="text/javascript"
+          src="js/MathJax/MathJax.js">
+  </script>
+  <script src="js/MathJax/config/default.js"></script>
 
   <style>
     input[type=text] {
@@ -33,7 +38,7 @@
 
 <form id="graph-form">
   <label for="eq">Digite a equação:</label>
-  <input type="text" id="eq" placeholder="4 * sin(x) + 5 * cos(x/2)" />
+  <input type="text" id="eq" placeholder="4 * sin(x) + 5 * cos(x/2)" value=""/>
   <br>
   <input type="submit" value="Plotar gráfico" />
 </form>
@@ -47,6 +52,9 @@
 
 <div id="plot"></div>
 <p id="limit-result"></p>
+<div style="padding: 20px; border:1px solid #444; -webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;">
+  <div id="pretty"></div>
+</div>
 
 <p>
   Plot library: <a href="https://github.com/maurizzzio/function-plot">https://github.com/maurizzzio/function-plot</a>
@@ -101,11 +109,14 @@
   }
 
   function drawGraph(equationId){
+    let equation = document.querySelector(equationId).value;
+    let latex = '$$' + math.parse(equation).toTex({parenthesis: "auto"}) + '$$';
     try {
       functionPlot({
         target: '#plot',
+        title: "",
         data: [{
-          fn: document.querySelector(equationId).value,
+          fn: equation,
           sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
           graphType: 'polyline'
         }]
@@ -128,10 +139,10 @@
   //   console.log(invert);
   // }
   document.getElementById('graph-form').onsubmit = function (event) {
-
+    let equation = document.querySelector("#eq").value;
     event.preventDefault();
     drawGraph("#eq");
-
+    calculateDerivative(equation);
     // document.querySelector("#limit-result").textContent = `O valor do limite é: ${calculateLimit.calculate()}`;
   };
 
@@ -142,11 +153,50 @@
     let xToLimit = document.querySelector("#x-to-limit").value;
     let limit = calculateLimit(equation, xToLimit);
     document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
-    calculateDerivative(equation)
-    invertFunction(equation);
 
   }
-</script>
+</script><script>
 
+  var expr = document.getElementById('eq'),
+          pretty = document.getElementById('pretty'),
+          parenthesis = 'auto',
+          implicit = 'show';
+
+  // initialize with an example expression
+  //expr.value = 'sqrt(75 / 3) + det([[-1, 2], [3, 1]]) - sin(pi / 4)^2';
+  pretty.innerHTML = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
+  //result.innerHTML = math.format(math.eval(expr.value));
+
+  expr.oninput = function () {
+    var node = null;
+
+    try {
+      // parse the expression
+      node = math.parse(expr.value);
+
+      // evaluate the result of the expression
+     // result.innerHTML = math.format(node.compile().eval());
+
+    }
+    catch (err) {
+      //result.innerHTML = '<span style="color: red;">' + err.toString() + '</span>';
+      console.log(err.toString());
+    }
+
+    try {
+      // export the expression to LaTeX
+      var latex = node ? node.toTex({parenthesis: parenthesis, implicit: implicit}) : '';
+      console.log('LaTeX expression:', latex);
+
+      // display and re-render the expression
+      var elem = MathJax.Hub.getAllJax('pretty')[0];
+      MathJax.Hub.Queue(['Text', elem, latex]);
+    }
+    catch (err) {
+      console.log(err.toString());
+    }
+  };
+
+</script>
 </body>
 </html>
