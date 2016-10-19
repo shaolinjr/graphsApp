@@ -83,56 +83,63 @@
       // validamos e calculamos os valores dos limites
       numerador   = parser.eval("f(x)="+numerador);
       numerador   = parser.eval("f("+xToLimit+")");
+      console.log("Numerador: "+numerador);
 
       denominador = parser.eval("f(x)="+denominador);
       denominador = parser.eval("f("+xToLimit+")");
+      console.log("Denominador: "+denominador);
 
       // montamos o resultado
-      result = numerador + "/" + denominador;
+      result = numerador + "/" + denominador; //type string
+      console.log("Resultado: "+ result);
     }
     else{
       result = parser.eval("f(x)="+equation);
-      result = parser.eval("f("+xToLimit+")");
+//      result = parseFloat(parser.eval("f("+xToLimit+")")); //type int\
+      if (Number.isInteger(parser.eval("f("+xToLimit+")"))){
+        result = parseInt(parser.eval("f("+xToLimit+")"));
+      }else{
+        result = parseFloat(math.format(parser.eval("f("+xToLimit+")"),{precision:4}));
+
+        console.log("Wasn't an integer")
+      }
     }
 
-    if (!Number.isInteger(result) && typeof result != "string"){
+    if (typeof result == "string" || !Number.isInteger(result)){
       // result = result.toString().substring(2);
       // result = decimalToFraction(result);
       // usar o Ratio
       result = Ratio.parse(result).simplify();
     }else if (isNaN(result)){
       // deu indeterminação
-      result = "0/0 (Indeterminação matemátic)";
+      result = "0/0 (Indeterminação matemática)";
     }
 
     return result;
   }
+
   function calculateDerivative (equation, symbol){
     var derivative = nerdamer (`diff(${equation},x)`);
-    console.log(`Derivada de ${equation} é : ${derivative.text()}`)
+//    console.log(`Derivada de ${equation} é : ${derivative.text()}`)
     return derivative.toString();
   }
+
   function drawGraph(equationId){
-<<<<<<< HEAD
-    let func = document.querySelector(equationId).value;
-=======
+
     let equation = document.querySelector(equationId).value;
-    let latex = '$$' + math.parse(equation).toTex({parenthesis: "auto"}) + '$$';
->>>>>>> 468862ce5f9feac0e2904a6f462265453b605aa3
+    let tex = "$$"+formatToTex(equation)+ "$$";
+
+    console.log(tex);
     try {
       functionPlot({
         target: '#plot',
-        title: "",
+        title: tex,
         data: [{
-<<<<<<< HEAD
-          fn: func,
-=======
           fn: equation,
->>>>>>> 468862ce5f9feac0e2904a6f462265453b605aa3
           sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
           graphType: 'polyline',
           derivative:{
-            fn: calculateDerivative(func, "x"),
+            fn: calculateDerivative(equation, "x"),
             // x0: 2,
             updateOnMouseMove:true
           }
@@ -144,19 +151,14 @@
       alert(err);
     }
   }
-  /*
-  */
 
-
-  // function invertFunction (equation){
-  //   var invert = nerdamer().invert(equation);
-  //   console.log(invert);
-  // }
   document.getElementById('graph-form').onsubmit = function (event) {
     let equation = document.querySelector("#eq").value;
     event.preventDefault();
     drawGraph("#eq");
     calculateDerivative(equation);
+//    MathJax.Hub.Typeset();
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub,"plot"]);
     // document.querySelector("#limit-result").textContent = `O valor do limite é: ${calculateLimit.calculate()}`;
   };
 
@@ -167,14 +169,7 @@
     let xToLimit = document.querySelector("#x-to-limit").value;
     let limit = calculateLimit(equation, xToLimit);
     document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
-<<<<<<< HEAD
-    calculateDerivative(equation)
-
-=======
->>>>>>> 468862ce5f9feac0e2904a6f462265453b605aa3
-
   }
-</script><script>
 
   var expr = document.getElementById('eq'),
           pretty = document.getElementById('pretty'),
@@ -184,29 +179,17 @@
   // initialize with an example expression
   //expr.value = 'sqrt(75 / 3) + det([[-1, 2], [3, 1]]) - sin(pi / 4)^2';
   pretty.innerHTML = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
+
   //result.innerHTML = math.format(math.eval(expr.value));
 
   expr.oninput = function () {
-    var node = null;
-
-    try {
-      // parse the expression
-      node = math.parse(expr.value);
-
-      // evaluate the result of the expression
-     // result.innerHTML = math.format(node.compile().eval());
-
-    }
-    catch (err) {
-      //result.innerHTML = '<span style="color: red;">' + err.toString() + '</span>';
-      console.log(err.toString());
-    }
 
     try {
       // export the expression to LaTeX
-      var latex = node ? node.toTex({parenthesis: parenthesis, implicit: implicit}) : '';
-      console.log('LaTeX expression:', latex);
+      //var latex = node ? node.toTex({parenthesis: parenthesis, implicit: implicit}) : '';
 
+      var latex = formatToTex(expr.value);
+      console.log('LaTeX expression:', latex);
       // display and re-render the expression
       var elem = MathJax.Hub.getAllJax('pretty')[0];
       MathJax.Hub.Queue(['Text', elem, latex]);
@@ -215,6 +198,22 @@
       console.log(err.toString());
     }
   };
+
+
+  function formatToTex (expressionValue){
+    var node = math.parse(expressionValue);
+    var latex;
+    if (node){
+      latex =  node.toTex({parenthesis: "auto", implicit: "show"});
+    }else {
+      latex = "";
+    }
+
+    return `${latex}`;
+
+
+  }
+
 
 </script>
 </body>
