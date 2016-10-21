@@ -28,6 +28,16 @@
     /*background-repeat: no-repeat;*/
 /*}*/
 
+#index-banner{
+    width: 100%;
+}
+
+.parallax-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .justify {
     text-align: justify;
     color: #4A4A4A;
