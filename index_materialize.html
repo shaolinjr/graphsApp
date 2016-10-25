@@ -11,6 +11,18 @@
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" href="css/animate.css">
   <script src="https://use.fontawesome.com/cf34f4bf55.js"></script>
+  <script src="js/d3.min.js"></script>
+  <script src="js/function-plot.js"></script>
+  <script src="js/math.js"></script>
+  <script type="text/javascript"
+          src="js/MathJax/MathJax.js">
+  </script>
+  <script src="js/MathJax/config/default.js"></script>
+  <style>
+    .function-plot{
+      max-width: 100%;
+    }
+  </style>
 </head>
 <body>
 
@@ -56,13 +68,13 @@
             </g>
         </svg><span class="logo-font">Graphs</span>
       </a>
-      <!-- <ul class="right hide-on-med-and-down">
+      <ul class="right hide-on-med-and-down">
         <li><a href="#">Navbar Link</a></li>
       </ul>
 
       <ul id="nav-mobile" class="side-nav">
         <li><a href="#">Navbar Link</a></li>
-      </ul> -->
+      </ul>
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
     </div>
   </nav>
@@ -108,7 +120,7 @@
       <div class="container">
           <div class="row">
               <div class="col m12 wow bounceInRight">
-                <h3 class="light right section-title">Ajuda</h3>
+                <h3 class="light right section-title">Como funciona</h3>
               </div>
           </div>
           <div class="row valign-wrapper">
@@ -127,12 +139,12 @@
   </div>
 
   <!-- Exemplos Section -->
-  <div class="section">
+  <!--div class="section">
       <div class="container">
           <h3 class="center section-title wow fadeIn">Funções de exemplo</h3>
           <div class="row">
             <br><br>
-            <!-- Primeira linha -->
+            <!~~ Primeira linha ~~>
             <div class="col m4 center wow fadeIn" data-wow-delay="0.2s">
               <div class="card-panel indigo hoverable" style="padding: 10px;">
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;">f(x) = x^2+5x+10</a>
@@ -148,7 +160,7 @@
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;">f(x) = x^2+5x+10</a>
               </div>
             </div>
-            <!-- Segunda linha -->
+            <!~~ Segunda linha ~~>
             <div class="col m4 center wow fadeIn" data-wow-delay="0.2s">
               <div class="card-panel indigo hoverable" style="padding: 10px;">
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;">f(x) = x^2+5x+10</a>
@@ -167,39 +179,128 @@
 
           </div>
       </div>
+  </div>-->
+
+  <div class="section">
+    <div class="container">
+      <h3 class="light left section-title">Funções prontas</h3>
+    
+      <br></br>
+      <div class="row">
+        <div class="col m3 right">
+          <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+            <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:12px;">$$f(x) = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</a>
+          </div>
+        </div>
+        <div class="col m3 right">
+          <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+            <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:12px;">$$f(x) = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col m3 right">
+          <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+            <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:12px;">$$f(x) = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</a>
+          </div>
+        </div>
+        <div class="col m3 right">
+          <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+            <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:12px;">$$f(x) = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col m3 right">
+          <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+            <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;">$$f(x) = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</a>
+          </div>
+        </div>
+        <div class="col m3 right">
+          <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+            <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;">$$f(x) = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- <div class="divider"></div> -->
+  <!-- Gráfico Section -->
+  <div class="section">
+    <div class="container">
+      <div class="row">
+
+        <!-- Formulário -->
+        <div class="col m6">
+          <div class="row">
+            <!-- Função -->
+            <div class="col m6">
+              <div class="input-field">
+                <input id="eq" type="text" class="validate">
+                <label for="eq">Digite a lei da função</label>
+              </div>
+            </div>
+            <!-- Função inversa -->
+            <form id="graph-form">
+            <div class="col m6">
+              <div class="input-field">
+                <input id="inverse-eq" type="text" class="validate">
+                <label for="inverse-eq">Digite a lei da função inversa</label>
+              </div>
+            </div>
+
+            <!-- Preview Função-->
+            <div class="col m6">
+              <div class="card-panel white center-align">
+                <div id="funcao-preview"></div>
+              </div>
+            </div>
+
+            <!-- Preview Inversa-->
+            <div class="col m6">
+              <div class="card-panel white center-align">
+                <div id="inversa-preview"></div>
+              </div>
+            </div>
+
+            <!-- Botão de Plotar -->
+            <div class="col m6">
+              <input type="submit" class="btn waves-effect waves-light pink" style="font-size:16px;width: 100%" value="Plotar gráfico"></input>
+            </div>
+          </div>
+          </form>
+          <form id="limit-form">
+          <div class="row">
+            <div class="col m12">
+              <div class="input-field">
+                <input id="first_name" type="text" class="validate">
+                <label for="first_name">Digite um valor para o limite:</label>
+              </div>
+            </div>
+
+            <!-- Botão de Calcular Limite -->
+            <div class="col m6">
+              <input type="submit" value="Calcular limite" class="btn waves-effect waves-light pink" style="font-size:16px;width: 100%"></input>
+            </div>
+          </div>
+          </form>
+        </div>
+
+        <!-- Gráfico -->
+        <div class="col m6">
+          <div id="plot"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   
     
   <footer class="page-footer pink" style="padding-top: 0px">  <!-- Colocar o padding top depois-->
-    <!-- <div class="container">
-      <div class="row">
-        <div class="col l6 s12">
-          <h5 class="white-text">Company Bio</h5>
-          <p class="grey-text text-lighten-4">We are a team of college students working on this project like it's our full time job. Any amount would help support and continue development on this project and is greatly appreciated.</p>
-
-
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Settings</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-        <div class="col l3 s12">
-          <h5 class="white-text">Connect</h5>
-          <ul>
-            <li><a class="white-text" href="#!">Link 1</a></li>
-            <li><a class="white-text" href="#!">Link 2</a></li>
-            <li><a class="white-text" href="#!">Link 3</a></li>
-            <li><a class="white-text" href="#!">Link 4</a></li>
-          </ul>
-        </div>
-      </div>
-    </div> -->
     <div class="footer-copyright">
       <div class="container">
       Made with <i class="fa fa-heart"></i> in 2016
@@ -207,29 +308,204 @@
     </div>
   </footer>
 
-  <!-- Fazer preloader aparecer por 1,5 s e depois dar fade na tela -->
-  <!-- <div class="preloader-wrapper big active">
-    <div class="spinner-layer spinner-indigo-only">
-      <div class="circle-clipper left">
-        <div class="circle"></div>
-      </div>
-      <div class="gap-patch">
-        <div class="circle"></div>
-      </div>
-      <div class="circle-clipper right">
-        <div class="circle"></div>
-      </div>
-    </div>
-  </div>
- -->
-
   <!--  Scripts-->
-  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery.js"></script>
   <script src="js/materialize.min.js"></script>
   <script src="js/init.js"></script>
   <script src="js/wow.min.js"></script>
+  <script src="js/Ratio-0.4.1.min.js"></script>
+  <script type="text/javascript" src="js/nerdamer.core.js"></script>
+  <script type="text/javascript" src="js/Calculus.js"></script>
   <script>
     new WOW().init();
+  </script>
+  <script>
+
+    var graphOptions = {}
+
+    function calculateLimit (equation, xToLimit){
+      parser = math.parser();
+
+      if (equation.indexOf('/') >=0){
+        // temos que pegar a equação antes da barra e a equação depois da barra para dar eval separado
+        // result = numerador + '/'+ denominador
+        // em seguida mandamos o Ratio simplificar..
+
+        // separamos as equações
+        numerador   = equation.split("/")[0].replace("(","").replace(")","");
+        denominador = equation.split("/")[1].replace("(","").replace(")","");
+
+        // validamos e calculamos os valores dos limites
+        numerador   = parser.eval("f(x)="+numerador);
+        numerador   = parser.eval("f("+xToLimit+")");
+        console.log("Numerador: "+numerador);
+
+        denominador = parser.eval("f(x)="+denominador);
+        denominador = parser.eval("f("+xToLimit+")");
+        console.log("Denominador: "+denominador);
+
+        // montamos o resultado
+        result = numerador + "/" + denominador; //type string
+        console.log("Resultado: "+ result);
+      }
+      else{
+        result = parser.eval("f(x)="+equation);
+
+        if (Number.isInteger(parser.eval("f("+xToLimit+")"))){
+          result = parseInt(parser.eval("f("+xToLimit+")"));
+        }else{
+          result = parseFloat(math.format(parser.eval("f("+xToLimit+")"),{precision:4}));
+
+          console.log("Wasn't an integer")
+        }
+      }
+
+      if (typeof result == "string" || !Number.isInteger(result)){
+        // usar o Ratio
+        result = Ratio.parse(result).simplify();
+      }else if (isNaN(result)){
+        // deu indeterminação
+        result = "0/0 (Indeterminação matemática)";
+      }
+      return result;
+    }
+
+    function calculateDerivative (equation, symbol){
+      try {
+        var derivative = nerdamer (`diff(${equation},x)`);
+      }catch(err){
+        console.log("Unsupported function to calculate derivative")
+        return;
+      }
+      
+      return derivative.toString();
+    }
+    
+
+    function drawGraph(equationId){
+      let equation = document.querySelector(equationId).value;
+      graphOptions = {
+        target: '#plot',
+        data: [{
+          fn: equation,
+          color:"#007C4B",
+          sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
+          graphType: 'polyline',
+          // derivative:{
+          //   fn: calculateDerivative(equation, "x"),
+          //   // x0: 2,
+          //   updateOnMouseMove:true
+          // }
+        }]
+      }
+      
+      try {
+        functionPlot(graphOptions);
+      }
+      catch (err) {
+        console.log(err);
+        alert(err);
+      }
+    }
+
+    function addInverse (equationId){
+      let inverseEq = document.querySelector(equationId).value;
+      // temos que dar o update no gráfico
+
+      graphOptions.data[1] = {
+
+        fn: inverseEq,
+        color:"#D32F2F",
+        sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
+        graphType: 'polyline',
+        // derivative:{
+        //   fn: calculateDerivative(inverseEq, "y"),
+        //   // x0: 2,
+        //   updateOnMouseMove:true
+        // }
+      }
+
+      functionPlot(graphOptions);
+
+    }
+
+    document.getElementById('graph-form').onsubmit = function (event) {
+      let equation = document.querySelector("#eq").value;
+      let inverseEq = document.querySelector("#inverse-eq").value;
+      event.preventDefault();
+      drawGraph("#eq");
+      calculateDerivative(equation);
+
+      if (inverseEq != ""){
+        addInverse("#inverse-eq");
+        // funtionPlot(graphOptions);
+      }
+      
+      document.querySelector("#derivative-result").textContent = `O resultado da derivada é: ${calculateDerivative(equation)}`;
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,"plot"]);  
+    };
+
+    document.getElementById('limit-form').onsubmit = function (event) {
+
+      event.preventDefault();
+      let equation = document.querySelector("#eq").value;
+      let xToLimit = document.querySelector("#x-to-limit").value;
+      let limit = calculateLimit(equation, xToLimit);
+      document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
+    }
+
+    var expr            = document.getElementById('eq'),
+        inverse         = document.getElementById('inverse-eq'),
+        funcaoPrev      = document.getElementById('funcao-preview'),
+        inversePrev     = document.getElementById('inversa-preview'),
+        parenthesis     = 'auto',
+        implicit        = 'show';
+
+    // initialize with an example expression
+    //expr.value = 'sqrt(75 / 3) + det([[-1, 2], [3, 1]]) - sin(pi / 4)^2';
+    funcaoPrev.innerHTML  = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
+    inversePrev.innerHTML = '$$' + math.parse(inverse.value).toTex({parenthesis: parenthesis}) + '$$';
+
+    //result.innerHTML = math.format(math.eval(expr.value));
+
+    expr.oninput = function () {
+
+      try {
+        // graphOptions.data =[];
+        var latexOne = formatToTex(expr.value);
+        console.log('LaTeX expression:', latex);
+        // display and re-render the expression
+        var previewOne = MathJax.Hub.getAllJax('funcao-preview')[0];
+        MathJax.Hub.Queue(['Text', previewOne, latexOne]);
+      }
+      catch (err) {
+        console.log(err.toString());
+      }
+    };
+
+    inverse.oninput = function () {
+      try {
+        
+        var latexTwo = formatToTex(inverse.value);
+        var previewTwo = MathJax.Hub.getAllJax('inversa-preview')[0];
+        MathJax.Hub.Queue(['Text', previewTwo, latexTwo]);
+      }
+      catch (err) {
+        console.log(err.toString());
+      }
+    }
+
+
+    function formatToTex (expressionValue){
+      var node = math.parse(expressionValue);
+      var latex;
+      if (node){
+        latex =  node.toTex({parenthesis: "auto", implicit: "show"});
+      }else {
+        latex = "";
+      }
+      return `${latex}`;
+    }
   </script>
 
   </body>
