@@ -37,20 +37,24 @@
 <body>
 
 <form id="graph-form">
-  <label for="eq">Digite a equação:</label>
-  <input type="text" id="eq" placeholder="4 * sin(x) + 5 * cos(x/2)" value=""/>
+  <label for="eq">Digite a função:</label>
+  <input type="text" id="eq" placeholder="(x-1)/(3-x)" value="" required="" />
+  <br>
+  <label for="inverse-eq">Digite a função inversa:</label>
+  <input type="text" id="inverse-eq" placeholder="(3y+1)/(y+1)" value=""/>
   <br>
   <input type="submit" value="Plotar gráfico" />
 </form>
 
 <form id="limit-form">
-  <label for="eq">Digite o valor para calcular o limite:</label>
+  <label for="x-to-limit">Digite o valor para calcular o limite:</label>
   <input type="text" id="x-to-limit" placeholder="2" />
   <br>
   <input type="submit" name="limit" value="Calcular Limite">
 </form>
 
 <div id="plot"></div>
+<p id="derivative-result"></p>
 <p id="limit-result"></p>
 <div style="padding: 20px; border:1px solid #444; -webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;">
   <div id="pretty"></div>
@@ -67,6 +71,7 @@
 
 <script>
 
+  var graphOptions = {}
 
   function calculateLimit (equation, xToLimit){
     parser = math.parser();
@@ -74,7 +79,7 @@
     if (equation.indexOf('/') >=0){
       // temos que pegar a equação antes da barra e a equação depois da barra para dar eval separado
       // result = numerador + '/'+ denominador
-      // em seguida mandamos o Ratio simplificar..\
+      // em seguida mandamos o Ratio simplificar..
 
       // separamos as equações
       numerador   = equation.split("/")[0].replace("(","").replace(")","");
@@ -95,7 +100,7 @@
     }
     else{
       result = parser.eval("f(x)="+equation);
-//      result = parseFloat(parser.eval("f("+xToLimit+")")); //type int\
+
       if (Number.isInteger(parser.eval("f("+xToLimit+")"))){
         result = parseInt(parser.eval("f("+xToLimit+")"));
       }else{
@@ -106,45 +111,46 @@
     }
 
     if (typeof result == "string" || !Number.isInteger(result)){
-      // result = result.toString().substring(2);
-      // result = decimalToFraction(result);
       // usar o Ratio
       result = Ratio.parse(result).simplify();
     }else if (isNaN(result)){
       // deu indeterminação
       result = "0/0 (Indeterminação matemática)";
     }
-
     return result;
   }
 
   function calculateDerivative (equation, symbol){
-    var derivative = nerdamer (`diff(${equation},x)`);
-//    console.log(`Derivada de ${equation} é : ${derivative.text()}`)
+    try {
+      var derivative = nerdamer (`diff(${equation},x)`);
+    }catch(err){
+      console.log("Unsupported function to calculate derivative")
+      return;
+    }
+    
     return derivative.toString();
   }
+  
 
   function drawGraph(equationId){
-
     let equation = document.querySelector(equationId).value;
-    let tex = "$$"+formatToTex(equation)+ "$$";
-
-    console.log(tex);
+    graphOptions = {
+      target: '#plot',
+      data: [{
+        fn: equation,
+        color:"#007C4B",
+        sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
+        graphType: 'polyline',
+        // derivative:{
+        //   fn: calculateDerivative(equation, "x"),
+        //   // x0: 2,
+        //   updateOnMouseMove:true
+        // }
+      }]
+    }
+    
     try {
-      functionPlot({
-        target: '#plot',
-        title: tex,
-        data: [{
-          fn: equation,
-          sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
-          graphType: 'polyline',
-          derivative:{
-            fn: calculateDerivative(equation, "x"),
-            // x0: 2,
-            updateOnMouseMove:true
-          }
-        }]
-      });
+      functionPlot(graphOptions);
     }
     catch (err) {
       console.log(err);
@@ -152,14 +158,41 @@
     }
   }
 
+  function addInverse (equationId){
+    let inverseEq = document.querySelector(equationId).value;
+    // temos que dar o update no gráfico
+
+    graphOptions.data[1] = {
+
+      fn: inverseEq,
+      color:"#D32F2F",
+      sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
+      graphType: 'polyline',
+      // derivative:{
+      //   fn: calculateDerivative(inverseEq, "y"),
+      //   // x0: 2,
+      //   updateOnMouseMove:true
+      // }
+    }
+
+    functionPlot(graphOptions);
+
+  }
+
   document.getElementById('graph-form').onsubmit = function (event) {
     let equation = document.querySelector("#eq").value;
+    let inverseEq = document.querySelector("#inverse-eq").value;
     event.preventDefault();
     drawGraph("#eq");
+    
     calculateDerivative(equation);
-//    MathJax.Hub.Typeset();
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub,"plot"]);
-    // document.querySelector("#limit-result").textContent = `O valor do limite é: ${calculateLimit.calculate()}`;
+    if (inverseEq != ""){
+      addInverse("#inverse-eq");
+      // funtionPlot(graphOptions);
+    }
+    
+    document.querySelector("#derivative-result").textContent = `O resultado da derivada é: ${calculateDerivative(equation)}`;
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub,"plot"]);  
   };
 
   document.getElementById('limit-form').onsubmit = function (event) {
@@ -171,10 +204,10 @@
     document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
   }
 
-  var expr = document.getElementById('eq'),
-          pretty = document.getElementById('pretty'),
-          parenthesis = 'auto',
-          implicit = 'show';
+  var expr        = document.getElementById('eq'),
+      pretty      = document.getElementById('pretty'),
+      parenthesis = 'auto',
+      implicit    = 'show';
 
   // initialize with an example expression
   //expr.value = 'sqrt(75 / 3) + det([[-1, 2], [3, 1]]) - sin(pi / 4)^2';
@@ -185,9 +218,7 @@
   expr.oninput = function () {
 
     try {
-      // export the expression to LaTeX
-      //var latex = node ? node.toTex({parenthesis: parenthesis, implicit: implicit}) : '';
-
+      // graphOptions.data =[];
       var latex = formatToTex(expr.value);
       console.log('LaTeX expression:', latex);
       // display and re-render the expression
@@ -208,10 +239,7 @@
     }else {
       latex = "";
     }
-
     return `${latex}`;
-
-
   }
 
 

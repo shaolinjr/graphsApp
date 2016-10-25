@@ -1,6 +1,6 @@
-// Funcionalidades
-  -> Calcular limite
-  -> Plotar gráfico
-  -> Calcular derivada
-  -> Calcular função inversa e plotar no gráfico
-  
+// Funcionalidades 
+  -> Calcular limite √ 
+  -> Plotar gráfico √
+  -> Calcular derivada √
+  -> Calcular função inversa e plotar no gráfico √
+  -> Colocar para mostrar a reta da derivada' como opcional em um radio button 
