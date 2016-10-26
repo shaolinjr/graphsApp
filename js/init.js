@@ -18,4 +18,33 @@ jQuery(document).ready(function($) {
 	$('.parallax-container').css ({
 		"height": parallaxHeight
 	})
+
+	$('#eq').keyup(function(event) {
+		/* Act on the event */
+		event.preventDefault();
+		$('.preview').first().fadeIn('1200', function() {
+			
+		});
+	});
+
+	$('#inverse-eq').keyup(function(event) {
+		/* Act on the event */
+		event.preventDefault();
+
+		$('.preview').eq(1).fadeIn('1200', function() {
+			
+		});
+	});
+
+	$('#limit-value').keyup(function(event) {
+		/* Act on the event */
+		event.preventDefault();
+
+		$('.preview').eq(2).fadeIn('1200', function() {
+			
+		});
+	});
+
+
 });
+	

@@ -51,3 +51,7 @@
 .section-title{
     color: #444;
 }
+
+.preview {
+    display: none;
+}

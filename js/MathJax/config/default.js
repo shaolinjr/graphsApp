@@ -101,7 +101,7 @@ MathJax.Hub.Config({
   //  jax array above, and "asciimath2jax.js" if you using "input/AsciiMath".
   //  Include "jsmath2jax.js" if you are converting from using jsMath to MathJax.
   //
-  extensions: ["tex2jax.js"],
+  extensions: ["tex2jax.js","handle-floats.js"],
   
   //
   //  Patterns to remove from before and after math script tags.  If you are not
@@ -249,7 +249,7 @@ MathJax.Hub.Config({
     mpContext: false,    //  true means pass menu events to MathPlayer in IE
     mpMouse: false,      //  true means pass mouse events to MathPlayer in IE
     texHints: true,      //  include class names for TeXAtom elements
-    FastPreview: null,   //  use PreviewHTML output as preview?
+    FastPreview: true,   //  use PreviewHTML output as preview?
     assistiveMML: null,  //  include hidden MathML for screen readers?
     inTabOrder: true,    //  set to true if math elements should be included in the tabindex
     semantics: false     //  add semantics tag with original form in MathML output
@@ -552,7 +552,8 @@ MathJax.Hub.Config({
 //                                                          // element ID to use for reference
 //    formatURL:    function (id,base) {return base+'#'+escape(id)},
 //                                                          // URL to use for references
-      useLabelIds: true    // make element ID's use \label name rather than equation number
+      useLabelIds: true,    // make element ID's use \label name rather than equation number
+      extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
     },
 
     //
@@ -1111,7 +1112,7 @@ MathJax.Hub.Config({
       Chrome:  "HTML",
       other:   "HTML"
     }
-  }
+  },
 });
 
 MathJax.Ajax.loadComplete("[MathJax]/config/default.js");
