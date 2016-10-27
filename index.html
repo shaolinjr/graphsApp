@@ -1,248 +1,471 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>math.js | plot</title>
-  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Graphs</title>
 
-
-  <!-- load http://maurizzzio.github.io/function-plot/ -->
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="stylesheet" href="css/animate.css">
+  <script src="https://use.fontawesome.com/cf34f4bf55.js"></script>
   <script src="js/d3.min.js"></script>
   <script src="js/function-plot.js"></script>
   <script src="js/math.js"></script>
-  <style type="text/css" rel="stylesheet" href="css/bootstrap.css"></style>
-  <style type="text/css" rel="stylesheet" href="css/bootstrap-theme.css"></style>
-  <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.3/MathJax.js?config=default.js"></script>-->
-  <script type="text/javascript"
+ <!--  <script type="text/javascript"
           src="js/MathJax/MathJax.js">
-  </script>
+  </script> -->
+  <script src='http://cdn.mathjax.org/mathjax/latest/MathJax.js'></script>
   <script src="js/MathJax/config/default.js"></script>
-
+  <!-- <script src='http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default.js'></script> -->
   <style>
-    input[type=text] {
-      width: 300px;
-    }
-    input {
-      padding: 6px;
-    }
-    body, html, input {
-      font-family: sans-serif;
-      font-size: 11pt;
-
-    }
-    form {
-      margin: 20px 0;
+    .function-plot{
+      max-width: 100%;
     }
   </style>
+    <script>
+    //
+    //  Use a closure to hide the local variables from the
+    //  global namespace
+    //
+    (function () {
+      var QUEUE = MathJax.Hub.queue;  // shorthand for the queue
+      var funcaoPreview = null;       // the element jax for the math output.
+      var inversaPreview = null; 
+      var limitePreview = null; 
+
+      //
+      //  Get the element jax when MathJax has produced it.
+      //
+      QUEUE.Push(function () {
+        funcaoPreview   = MathJax.Hub.getAllJax("funcao-preview")[0];
+        inversaPreview  = MathJax.Hub.getAllJax("inversa-preview")[0];
+        limitePreview  = MathJax.Hub.getAllJax("limite-preview")[0];
+
+      });
+
+      //
+      //  The onchange event handler that typesets the
+      //  math entered by the user
+      //
+      window.UpdateMath = function (TeX,element) {
+        switch (element){
+          case 'funcao':
+            QUEUE.Push(["Text",funcaoPreview,"\\displaystyle{"+TeX+"}"]);
+            break;
+          case 'inversa': 
+            QUEUE.Push(["Text",inversaPreview,"\\displaystyle{"+TeX+"}"]);
+            break;
+          case 'limite':
+            QUEUE.Push(["Text",limitePreview,"\\displaystyle{"+TeX+"}"]);  
+            break;
+        }
+        
+      }
+    })();
+  </script>
 </head>
 <body>
 
-<form id="graph-form">
-  <label for="eq">Digite a função:</label>
-  <input type="text" id="eq" placeholder="(x-1)/(3-x)" value="" required="" />
-  <br>
-  <label for="inverse-eq">Digite a função inversa:</label>
-  <input type="text" id="inverse-eq" placeholder="(3y+1)/(y+1)" value=""/>
-  <br>
-  <input type="submit" value="Plotar gráfico" />
-</form>
+  <nav class="indigo" role="navigation">
+    <div class="nav-wrapper container">
+      <a id="logo-container" href="#" class="brand-logo">
+        
+        <svg width="60px" height="39px" viewBox="-314 951 60 39" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g id="Logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-314.000000, 951.000000)">
+                <g id="Group-3">
+                    <g id="Possibilidade_01-Copy-3">
+                        <g id="Graph">
+                            <path d="M44.9721453,2.88373702 C46.1140138,2.88373702 47.0397924,3.82058824 47.0397924,4.97352941 C47.0397924,6.12647059 46.1140138,7.0633218 44.9721453,7.0633218 C43.8358131,7.0633218 42.9044983,6.12647059 42.9044983,4.97352941 C42.9044983,3.82058824 43.8358131,2.88373702 44.9721453,2.88373702 L44.9721453,2.88373702 Z" id="Shape" fill="#FFFFFF"></path>
+                            <path d="M34.5842561,23.6375433 C34.5842561,24.7904844 33.6529412,25.7273356 32.516609,25.7273356 C31.3747405,25.7273356 30.4489619,24.7904844 30.4489619,23.6375433 C30.4489619,22.4846021 31.3747405,21.5477509 32.516609,21.5477509 C33.6529412,21.5477509 34.5842561,22.4846021 34.5842561,23.6375433 Z" id="Shape" fill="#FFFFFF"></path>
+                            <path d="M16.1916955,15.1453287 C17.333564,15.1453287 18.2593426,16.0821799 18.2593426,17.2351211 C18.2593426,18.3880623 17.333564,19.3249135 16.1916955,19.3249135 C15.0553633,19.3249135 14.1240484,18.3880623 14.1240484,17.2351211 C14.1240484,16.0821799 15.0553633,15.1453287 16.1916955,15.1453287 L16.1916955,15.1453287 Z" id="Shape" fill="#FFFFFF"></path>
+                            <path d="M44.9721453,0.00674740484 C47.682699,0.00674740484 49.8889273,2.23512111 49.8889273,4.97352941 C49.8889273,7.71193772 47.682699,9.94031142 44.9721453,9.94031142 C44.5896194,9.94031142 44.2238754,9.89048443 43.8634948,9.80726644 L36.5297578,20.7773356 C37.0951557,21.5866782 37.433218,22.5733564 37.433218,23.6377163 C37.433218,26.3761246 35.2269896,28.6044983 32.516436,28.6044983 C29.8058824,28.6044983 27.599654,26.3761246 27.599654,23.6377163 C27.599654,23.5323529 27.6107266,23.432699 27.616263,23.3273356 L20.0775087,20.267474 C19.1795848,21.4425606 17.7714533,22.2020761 16.1916955,22.2020761 C15.6539792,22.2020761 15.132872,22.1133218 14.6451557,21.9470588 L8.61972318,30.583391 C9.37352941,31.4591696 9.83373702,32.5955017 9.83373702,33.8371972 C9.83373702,36.5811419 7.62750865,38.8095156 4.91695502,38.8095156 C2.20640138,38.8095156 0,36.5809689 0,33.8370242 C0,31.0986159 2.20622837,28.8702422 4.91678201,28.8702422 C5.36574394,28.8702422 5.79256055,28.9366782 6.20276817,29.0531142 L12.3224913,20.283737 C11.6683391,19.4411765 11.2747405,18.3878893 11.2747405,17.2349481 C11.2747405,14.4965398 13.4809689,12.2681661 16.1915225,12.2681661 C18.9020761,12.2681661 21.1083045,14.4965398 21.1083045,17.2349481 C21.1083045,17.3513841 21.0972318,17.4622837 21.0916955,17.5730104 L28.6138408,20.6273356 C29.5117647,19.4410035 30.9254325,18.6705882 32.516263,18.6705882 C33.1370242,18.6705882 33.7302768,18.7925606 34.2735294,19.0031142 L41.3910035,8.36574394 C40.5650519,7.4733564 40.0550173,6.28702422 40.0550173,4.9733564 C40.0553633,2.23512111 42.2615917,0.00674740484 44.9721453,0.00674740484 L44.9721453,0.00674740484 Z M47.0397924,4.97352941 C47.0397924,3.82058824 46.1140138,2.88373702 44.9721453,2.88373702 C43.8358131,2.88373702 42.9044983,3.82058824 42.9044983,4.97352941 C42.9044983,6.12647059 43.8358131,7.0633218 44.9721453,7.0633218 C46.1141869,7.0633218 47.0397924,6.12647059 47.0397924,4.97352941 L47.0397924,4.97352941 Z M34.5842561,23.6375433 C34.5842561,22.4846021 33.6529412,21.5477509 32.516609,21.5477509 C31.3747405,21.5477509 30.4489619,22.4846021 30.4489619,23.6375433 C30.4489619,24.7904844 31.3747405,25.7273356 32.516609,25.7273356 C33.6529412,25.7273356 34.5842561,24.7904844 34.5842561,23.6375433 L34.5842561,23.6375433 Z M18.2593426,17.2351211 C18.2593426,16.0821799 17.333564,15.1453287 16.1916955,15.1453287 C15.0553633,15.1453287 14.1240484,16.0821799 14.1240484,17.2351211 C14.1240484,18.3880623 15.0553633,19.3249135 16.1916955,19.3249135 C17.333737,19.3249135 18.2593426,18.3880623 18.2593426,17.2351211 L18.2593426,17.2351211 Z M6.98442907,33.8370242 C6.98442907,32.6896194 6.05865052,31.7527682 4.91678201,31.7527682 C3.77491349,31.7527682 2.84913495,32.6896194 2.84913495,33.8370242 C2.84913495,34.9899654 3.77491349,35.9268166 4.91678201,35.9268166 C6.05865052,35.9268166 6.98442907,34.9899654 6.98442907,33.8370242 L6.98442907,33.8370242 Z" id="Shape" fill="#FF6881"></path>
+                            <path d="M4.91678201,31.7527682 C6.05865052,31.7527682 6.98442907,32.6896194 6.98442907,33.8370242 C6.98442907,34.9899654 6.05865052,35.9268166 4.91678201,35.9268166 C3.77491349,35.9268166 2.84913495,34.9899654 2.84913495,33.8370242 C2.84913495,32.6896194 3.77491349,31.7527682 4.91678201,31.7527682 L4.91678201,31.7527682 Z" id="Shape" fill="#FFFFFF"></path>
+                        </g>
+                    </g>
+                    <g id="Possibilidade_01-Copy-2" transform="translate(5.000000, 0.000000)">
+                        <g id="Graph">
+                            <path d="M44.9721453,2.88373702 C46.1140138,2.88373702 47.0397924,3.82058824 47.0397924,4.97352941 C47.0397924,6.12647059 46.1140138,7.0633218 44.9721453,7.0633218 C43.8358131,7.0633218 42.9044983,6.12647059 42.9044983,4.97352941 C42.9044983,3.82058824 43.8358131,2.88373702 44.9721453,2.88373702 L44.9721453,2.88373702 Z" id="Shape" fill="#FFFFFF"></path>
+                            <path d="M34.5842561,23.6375433 C34.5842561,24.7904844 33.6529412,25.7273356 32.516609,25.7273356 C31.3747405,25.7273356 30.4489619,24.7904844 30.4489619,23.6375433 C30.4489619,22.4846021 31.3747405,21.5477509 32.516609,21.5477509 C33.6529412,21.5477509 34.5842561,22.4846021 34.5842561,23.6375433 Z" id="Shape" fill="#FFFFFF"></path>
+                            <path d="M16.1916955,15.1453287 C17.333564,15.1453287 18.2593426,16.0821799 18.2593426,17.2351211 C18.2593426,18.3880623 17.333564,19.3249135 16.1916955,19.3249135 C15.0553633,19.3249135 14.1240484,18.3880623 14.1240484,17.2351211 C14.1240484,16.0821799 15.0553633,15.1453287 16.1916955,15.1453287 L16.1916955,15.1453287 Z" id="Shape" fill="#FFFFFF"></path>
+                            <path d="M44.9721453,0.00674740484 C47.682699,0.00674740484 49.8889273,2.23512111 49.8889273,4.97352941 C49.8889273,7.71193772 47.682699,9.94031142 44.9721453,9.94031142 C44.5896194,9.94031142 44.2238754,9.89048443 43.8634948,9.80726644 L36.5297578,20.7773356 C37.0951557,21.5866782 37.433218,22.5733564 37.433218,23.6377163 C37.433218,26.3761246 35.2269896,28.6044983 32.516436,28.6044983 C29.8058824,28.6044983 27.599654,26.3761246 27.599654,23.6377163 C27.599654,23.5323529 27.6107266,23.432699 27.616263,23.3273356 L20.0775087,20.267474 C19.1795848,21.4425606 17.7714533,22.2020761 16.1916955,22.2020761 C15.6539792,22.2020761 15.132872,22.1133218 14.6451557,21.9470588 L8.61972318,30.583391 C9.37352941,31.4591696 9.83373702,32.5955017 9.83373702,33.8371972 C9.83373702,36.5811419 7.62750865,38.8095156 4.91695502,38.8095156 C2.20640138,38.8095156 0,36.5809689 0,33.8370242 C0,31.0986159 2.20622837,28.8702422 4.91678201,28.8702422 C5.36574394,28.8702422 5.79256055,28.9366782 6.20276817,29.0531142 L12.3224913,20.283737 C11.6683391,19.4411765 11.2747405,18.3878893 11.2747405,17.2349481 C11.2747405,14.4965398 13.4809689,12.2681661 16.1915225,12.2681661 C18.9020761,12.2681661 21.1083045,14.4965398 21.1083045,17.2349481 C21.1083045,17.3513841 21.0972318,17.4622837 21.0916955,17.5730104 L28.6138408,20.6273356 C29.5117647,19.4410035 30.9254325,18.6705882 32.516263,18.6705882 C33.1370242,18.6705882 33.7302768,18.7925606 34.2735294,19.0031142 L41.3910035,8.36574394 C40.5650519,7.4733564 40.0550173,6.28702422 40.0550173,4.9733564 C40.0553633,2.23512111 42.2615917,0.00674740484 44.9721453,0.00674740484 L44.9721453,0.00674740484 Z M47.0397924,4.97352941 C47.0397924,3.82058824 46.1140138,2.88373702 44.9721453,2.88373702 C43.8358131,2.88373702 42.9044983,3.82058824 42.9044983,4.97352941 C42.9044983,6.12647059 43.8358131,7.0633218 44.9721453,7.0633218 C46.1141869,7.0633218 47.0397924,6.12647059 47.0397924,4.97352941 L47.0397924,4.97352941 Z M34.5842561,23.6375433 C34.5842561,22.4846021 33.6529412,21.5477509 32.516609,21.5477509 C31.3747405,21.5477509 30.4489619,22.4846021 30.4489619,23.6375433 C30.4489619,24.7904844 31.3747405,25.7273356 32.516609,25.7273356 C33.6529412,25.7273356 34.5842561,24.7904844 34.5842561,23.6375433 L34.5842561,23.6375433 Z M18.2593426,17.2351211 C18.2593426,16.0821799 17.333564,15.1453287 16.1916955,15.1453287 C15.0553633,15.1453287 14.1240484,16.0821799 14.1240484,17.2351211 C14.1240484,18.3880623 15.0553633,19.3249135 16.1916955,19.3249135 C17.333737,19.3249135 18.2593426,18.3880623 18.2593426,17.2351211 L18.2593426,17.2351211 Z M6.98442907,33.8370242 C6.98442907,32.6896194 6.05865052,31.7527682 4.91678201,31.7527682 C3.77491349,31.7527682 2.84913495,32.6896194 2.84913495,33.8370242 C2.84913495,34.9899654 3.77491349,35.9268166 4.91678201,35.9268166 C6.05865052,35.9268166 6.98442907,34.9899654 6.98442907,33.8370242 L6.98442907,33.8370242 Z" id="Shape" fill="#FF5481"></path>
+                            <path d="M4.91678201,31.7527682 C6.05865052,31.7527682 6.98442907,32.6896194 6.98442907,33.8370242 C6.98442907,34.9899654 6.05865052,35.9268166 4.91678201,35.9268166 C3.77491349,35.9268166 2.84913495,34.9899654 2.84913495,33.8370242 C2.84913495,32.6896194 3.77491349,31.7527682 4.91678201,31.7527682 L4.91678201,31.7527682 Z" id="Shape" fill="#FFFFFF"></path>
+                        </g>
+                    </g>
+                </g>
+                <g id="Possibilidade_01-Copy" transform="translate(10.000000, 0.000000)">
+                    <g id="line-chart-4">
+                        <g id="XMLID_27_">
+                            <g id="Group">
+                                <path d="M44.9721453,2.88373702 C46.1140138,2.88373702 47.0397924,3.82058824 47.0397924,4.97352941 C47.0397924,6.12647059 46.1140138,7.0633218 44.9721453,7.0633218 C43.8358131,7.0633218 42.9044983,6.12647059 42.9044983,4.97352941 C42.9044983,3.82058824 43.8358131,2.88373702 44.9721453,2.88373702 L44.9721453,2.88373702 Z" id="Shape" fill="#FFFFFF"></path>
+                                <path d="M34.5842561,23.6375433 C34.5842561,24.7904844 33.6529412,25.7273356 32.516609,25.7273356 C31.3747405,25.7273356 30.4489619,24.7904844 30.4489619,23.6375433 C30.4489619,22.4846021 31.3747405,21.5477509 32.516609,21.5477509 C33.6529412,21.5477509 34.5842561,22.4846021 34.5842561,23.6375433 Z" id="Shape" fill="#FFFFFF"></path>
+                                <path d="M16.1916955,15.1453287 C17.333564,15.1453287 18.2593426,16.0821799 18.2593426,17.2351211 C18.2593426,18.3880623 17.333564,19.3249135 16.1916955,19.3249135 C15.0553633,19.3249135 14.1240484,18.3880623 14.1240484,17.2351211 C14.1240484,16.0821799 15.0553633,15.1453287 16.1916955,15.1453287 L16.1916955,15.1453287 Z" id="Shape" fill="#FFFFFF"></path>
+                                <path d="M44.9721453,0.00674740484 C47.682699,0.00674740484 49.8889273,2.23512111 49.8889273,4.97352941 C49.8889273,7.71193772 47.682699,9.94031142 44.9721453,9.94031142 C44.5896194,9.94031142 44.2238754,9.89048443 43.8634948,9.80726644 L36.5297578,20.7773356 C37.0951557,21.5866782 37.433218,22.5733564 37.433218,23.6377163 C37.433218,26.3761246 35.2269896,28.6044983 32.516436,28.6044983 C29.8058824,28.6044983 27.599654,26.3761246 27.599654,23.6377163 C27.599654,23.5323529 27.6107266,23.432699 27.616263,23.3273356 L20.0775087,20.267474 C19.1795848,21.4425606 17.7714533,22.2020761 16.1916955,22.2020761 C15.6539792,22.2020761 15.132872,22.1133218 14.6451557,21.9470588 L8.61972318,30.583391 C9.37352941,31.4591696 9.83373702,32.5955017 9.83373702,33.8371972 C9.83373702,36.5811419 7.62750865,38.8095156 4.91695502,38.8095156 C2.20640138,38.8095156 0,36.5809689 0,33.8370242 C0,31.0986159 2.20622837,28.8702422 4.91678201,28.8702422 C5.36574394,28.8702422 5.79256055,28.9366782 6.20276817,29.0531142 L12.3224913,20.283737 C11.6683391,19.4411765 11.2747405,18.3878893 11.2747405,17.2349481 C11.2747405,14.4965398 13.4809689,12.2681661 16.1915225,12.2681661 C18.9020761,12.2681661 21.1083045,14.4965398 21.1083045,17.2349481 C21.1083045,17.3513841 21.0972318,17.4622837 21.0916955,17.5730104 L28.6138408,20.6273356 C29.5117647,19.4410035 30.9254325,18.6705882 32.516263,18.6705882 C33.1370242,18.6705882 33.7302768,18.7925606 34.2735294,19.0031142 L41.3910035,8.36574394 C40.5650519,7.4733564 40.0550173,6.28702422 40.0550173,4.9733564 C40.0553633,2.23512111 42.2615917,0.00674740484 44.9721453,0.00674740484 L44.9721453,0.00674740484 Z M47.0397924,4.97352941 C47.0397924,3.82058824 46.1140138,2.88373702 44.9721453,2.88373702 C43.8358131,2.88373702 42.9044983,3.82058824 42.9044983,4.97352941 C42.9044983,6.12647059 43.8358131,7.0633218 44.9721453,7.0633218 C46.1141869,7.0633218 47.0397924,6.12647059 47.0397924,4.97352941 L47.0397924,4.97352941 Z M34.5842561,23.6375433 C34.5842561,22.4846021 33.6529412,21.5477509 32.516609,21.5477509 C31.3747405,21.5477509 30.4489619,22.4846021 30.4489619,23.6375433 C30.4489619,24.7904844 31.3747405,25.7273356 32.516609,25.7273356 C33.6529412,25.7273356 34.5842561,24.7904844 34.5842561,23.6375433 L34.5842561,23.6375433 Z M18.2593426,17.2351211 C18.2593426,16.0821799 17.333564,15.1453287 16.1916955,15.1453287 C15.0553633,15.1453287 14.1240484,16.0821799 14.1240484,17.2351211 C14.1240484,18.3880623 15.0553633,19.3249135 16.1916955,19.3249135 C17.333737,19.3249135 18.2593426,18.3880623 18.2593426,17.2351211 L18.2593426,17.2351211 Z M6.98442907,33.8370242 C6.98442907,32.6896194 6.05865052,31.7527682 4.91678201,31.7527682 C3.77491349,31.7527682 2.84913495,32.6896194 2.84913495,33.8370242 C2.84913495,34.9899654 3.77491349,35.9268166 4.91678201,35.9268166 C6.05865052,35.9268166 6.98442907,34.9899654 6.98442907,33.8370242 L6.98442907,33.8370242 Z" id="Shape" fill="#FF4081"></path>
+                                <path d="M4.91678201,31.7527682 C6.05865052,31.7527682 6.98442907,32.6896194 6.98442907,33.8370242 C6.98442907,34.9899654 6.05865052,35.9268166 4.91678201,35.9268166 C3.77491349,35.9268166 2.84913495,34.9899654 2.84913495,33.8370242 C2.84913495,32.6896194 3.77491349,31.7527682 4.91678201,31.7527682 L4.91678201,31.7527682 Z" id="Shape" fill="#FFFFFF"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </svg><span class="logo-font">Graphs</span>
+      </a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
 
-<form id="limit-form">
-  <label for="x-to-limit">Digite o valor para calcular o limite:</label>
-  <input type="text" id="x-to-limit" placeholder="2" />
-  <br>
-  <input type="submit" name="limit" value="Calcular Limite">
-</form>
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
 
-<div id="plot"></div>
-<p id="derivative-result"></p>
-<p id="limit-result"></p>
-<div style="padding: 20px; border:1px solid #444; -webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;">
-  <div id="pretty"></div>
-</div>
+  <div class="parallax-container">
+    <div class="section no-pad-bot" id="index-banner">
+      <div class="container">
+        <br><br>
+        <h1 class="header center white-text logo-font wow bounceInDown">Graphs</h1>
+        <div class="row center">
+          <h4 class="header col s12 light white-text wow bounceInLeft">Funções, limites e derivadas é com a gente mesmo!</h4>
+        </div>
+        <br><br>
+        <div class="row center">
+          <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light pink wow fadeInUp">Começar</a>
+        </div>
+        <br><br>
+      </div>
+    </div>
+    <div class="parallax"><img src="imgs/background.png"></div>
+  </div>
 
-<p>
-  Plot library: <a href="https://github.com/maurizzzio/function-plot">https://github.com/maurizzzio/function-plot</a>
-</p>
-<script type="text/javascript" src="js/jquery.js"></script>
-<script src="js/bootstrap.js"></script>
-<script src="js/Ratio-0.4.1.min.js"></script>
-<script type="text/javascript" src="js/nerdamer.core.js"></script>
-<script type="text/javascript" src="js/Calculus.js"></script>
+  <!-- Sobre Section -->
+  <div class="section">
+      <div class="container">
+          <h3 class="light section-title wow bounceInLeft">Sobre</h3>
+          <div class="row valign-wrapper">
 
-<script>
+              <div class="col m7 wow bounceInLeft">
+                  <p class="justify">O <span class="logo-font">Graphs</span> é uma aplicação para realizar cálculos de funções e demonstrar seus devidos gráficos, calcular limites e derivadas de primeiro grau.</p>
+                  <p class="justify">Como foi feito por estudantes do 2º período de Ciência da Computação da FUMEC, tivemos algumas limitações ao desenvolver o site.</p>
+                  <p class="justify">Um desejo nosso era conseguir demonstrar o gráfico da inversa da função automaticamente, mas devido a dificuldade, fomos incapacitados de concluir nosso desejo.</p>
+              </div>
+              <div class="col m5 right-align wow fadeInRight">
+                  <img src="imgs/logo_sobre_circ.png" style="width:55%;margin: 0 auto"/>
+              </div>
+          </div>
+      </div>
+  </div>
 
-  var graphOptions = {}
+  <!-- Ajuda Section -->
+  <div class="section">
+      <div class="container">
+          <div class="row">
+              <div class="col m12 wow bounceInRight">
+                <h3 class="light right section-title">Como funciona</h3>
+              </div>
+          </div>
+          <div class="row valign-wrapper">
 
-  function calculateLimit (equation, xToLimit){
-    parser = math.parser();
+              <div class="col m5 left-align wow fadeInLeft">
+                  <img src="imgs/ajuda.png" style="width:75%;margin: 0 auto"/>
+              </div>
 
-    if (equation.indexOf('/') >=0){
-      // temos que pegar a equação antes da barra e a equação depois da barra para dar eval separado
-      // result = numerador + '/'+ denominador
-      // em seguida mandamos o Ratio simplificar..
+              <div class="col m7 wow bounceInRight">
+                  <p class="justify">O <span class="logo-font">Graphs</span> é uma aplicação para realizar cálculos de funções e demonstrar seus devidos gráficos, calcular limites e derivadas de primeiro grau.</p>
+                  <p class="justify">Como foi feito por estudantes do 2º período de Ciência da Computação da FUMEC, tivemos algumas limitações ao desenvolver o site.</p>
+                  <p class="justify">Um desejo nosso era conseguir demonstrar o gráfico da inversa da função automaticamente, mas devido a dificuldade, fomos incapacitados de concluir nosso desejo.</p>
+              </div>
+          </div>
+      </div>
+  </div>
 
-      // separamos as equações
-      numerador   = equation.split("/")[0].replace("(","").replace(")","");
-      denominador = equation.split("/")[1].replace("(","").replace(")","");
+  <div class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col m12">
+          <h3 class="light left section-title">Funções prontas</h3>
+        </div>
+      </div>  
+      <div class="row">
+        <div class="col m6">
+          <p class="justify">Caso você tenha dificuldade em pensar em alguma função, temos algumas já prontas!</p>
+          <p class="justify">É só clicar e ser feliz ;) !</p>
+        </div>
+        <div class="col m6">
+          <div class="row">
+            <div class="col m6 right">
+              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('x^2+4x+20')">$f(x) = {x^2+4x+20}$</a>
+              </div>
+            </div>
+            <div class="col m6 right">
+              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('10x-50')" >$f(x) = {10x-50}$</a>
 
-      // validamos e calculamos os valores dos limites
-      numerador   = parser.eval("f(x)="+numerador);
-      numerador   = parser.eval("f("+xToLimit+")");
-      console.log("Numerador: "+numerador);
+              </div>
+            </div>
+          </div>
 
-      denominador = parser.eval("f(x)="+denominador);
-      denominador = parser.eval("f("+xToLimit+")");
-      console.log("Denominador: "+denominador);
+          <div class="row">
+            <div class="col m6 right">
+              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('4^x-4')" >$f(x) = {4^x-4}$</a>
+              </div>
+            </div>
+            <div class="col m6 right">
+              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('log(4x-4)')">$f(x) = {log(4x-4)}$</a>
+              </div>
+            </div>
+          </div>
 
-      // montamos o resultado
-      result = numerador + "/" + denominador; //type string
-      console.log("Resultado: "+ result);
-    }
-    else{
-      result = parser.eval("f(x)="+equation);
+          <div class="row">
+            <div class="col m6 right">
+              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:15px;" onclick="drawGraph('(x^2+5)/(5x+1)')">$f(x) = \frac{x^2+5}{5x+1}$</a>
+              </div>
+            </div>
+            <div class="col m6 right">
+              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:15px;" onclick="drawGraph('nthRoot(x^2+2, 3)')">$f(x) = {\sqrt[3]{x^2+2}}$</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      if (Number.isInteger(parser.eval("f("+xToLimit+")"))){
-        result = parseInt(parser.eval("f("+xToLimit+")"));
-      }else{
-        result = parseFloat(math.format(parser.eval("f("+xToLimit+")"),{precision:4}));
+  <!-- <div class="divider"></div> -->
+  <!-- Gráfico Section -->
+  <div class="section">
+    <div class="container">
+      <div class="row">
 
-        console.log("Wasn't an integer")
-      }
-    }
+        <!-- Formulário -->
+        <div class="col m6">
+          
+          <!-- Função -->
+          <form id="graph-form">
+            <div class="row">
+              <div class="col m6">
+                <div class="input-field">
+                  <input id="eq" type="text" onkeyup="UpdateMath(formatToTex(this.value, 'funcao'))">
+                  <label for="eq">Digite a lei da função</label>
+                </div>
+              </div>
 
-    if (typeof result == "string" || !Number.isInteger(result)){
-      // usar o Ratio
-      result = Ratio.parse(result).simplify();
-    }else if (isNaN(result)){
-      // deu indeterminação
-      result = "0/0 (Indeterminação matemática)";
-    }
-    return result;
-  }
+            
+              <div class="col m6">
+                <div class="input-field">
+                  <input id="inverse-eq" type="text" onkeyup="UpdateMath(formatToTex(this.value,'inversa'))">
+                  <label for="inverse-eq">Digite a lei da função inversa</label>
+                </div>
+              </div>
 
-  function calculateDerivative (equation, symbol){
-    try {
-      var derivative = nerdamer (`diff(${equation},x)`);
-    }catch(err){
-      console.log("Unsupported function to calculate derivative")
-      return;
-    }
-    
-    return derivative.toString();
-  }
+              <!-- Preview Função-->
+              <div class="col m6">
+                <div class="card-panel white center-align preview">
+                  <div id="funcao-preview" ></div>
+                </div>
+              </div>
+
+              <!-- Preview Inversa-->
+              <div class="col m6">
+                <div class="card-panel white center-align preview">
+                  <div id="inversa-preview" ></div>
+                </div>
+              </div>
+            </div>
+
+          
+            <div class="row">
+              <!-- Botão de Plotar -->
+              <div class="col m6">
+                <input type="submit" class="btn waves-effect waves-light pink" style="font-size:16px;width: 100%" value="Plotar gráfico"></input>
+              </div>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Limite -->
+        <div class="col m6">
+          <form id="limit-form">
+            <div class="row">
+              <div class="col m12">
+                <div class="input-field">
+                  <input id="limit-value" type="text" onkeyup="UpdateMath(formatToTex(this.value,'limite'))">
+                  <label for="limit-value">Digite um valor para o limite:</label>
+                </div>
+              </div>
+              <!-- Preview Limite-->
+              <div class="col m12">
+                <div class="card-panel white center-align preview">
+                  <div id="limite-preview"></div>
+                </div>
+              </div>
+              <!-- Botão de Calcular Limite -->
+              <div class="col m6">
+                <input type="submit" value="Calcular limite" class="btn waves-effect waves-light pink" style="font-size:16px;width: 100%" id="limit-button"></input>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div class="row">
+        <div class="col m6">
+          <div id="plot"></div>
+        </div>
+
+        <div class="col m6 right">
+          <div class="card-panel hoverable center-align" id="resultados-panel">
+            <h5 class="light section-title">Resultados:</h5>
+            <p class="left-align">A função calculada: </p>
+            <p class="left-align">A inversa da função: </p> <!-- Só mostrar esse texto se houver inversa digitada -->
+            <p class="left-align">O resultado da derivada da função: </p>
+            <p class="left-align">O resultado da derivada da função: </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   
-
-  function drawGraph(equationId){
-    let equation = document.querySelector(equationId).value;
-    graphOptions = {
-      target: '#plot',
-      data: [{
-        fn: equation,
-        color:"#007C4B",
-        sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
-        graphType: 'polyline',
-        // derivative:{
-        //   fn: calculateDerivative(equation, "x"),
-        //   // x0: 2,
-        //   updateOnMouseMove:true
-        // }
-      }]
-    }
     
-    try {
+  <footer class="page-footer pink" style="padding-top: 0px">  <!-- Colocar o padding top depois-->
+    <div class="footer-copyright">
+      <div class="container">
+      Made with <i class="fa fa-heart"></i> in 2016
+      </div>
+    </div>
+  </footer>
+
+  <!--  Scripts-->
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script src="js/materialize.min.js"></script>
+  <script src="js/wow.min.js"></script>
+  <script src="js/Ratio-0.4.1.min.js"></script>
+  <script type="text/javascript" src="js/nerdamer.core.js"></script>
+  <script type="text/javascript" src="js/Calculus.js"></script>
+  <script>
+    new WOW().init();
+  </script>
+  <script type="text/javascript" src="js/graphFunctions.js"></script>
+
+  <script>
+
+    var expr            = document.getElementById('eq'),
+        inverse         = document.getElementById('inverse-eq'),
+        limit          = document.getElementById('limit-value'),
+        funcaoPrev      = document.getElementById('funcao-preview'),
+        inversePrev     = document.getElementById('inversa-preview'),
+        limitPrev      = document.getElementById('limite-preview'),
+        parenthesis     = 'auto',
+        implicit        = 'show',
+        graphOptions    = {};
+
+    
+
+    document.getElementById('graph-form').onsubmit = function (event) {
+      event.preventDefault();
+
       functionPlot(graphOptions);
+
+      let equation = document.querySelector("#eq").value;
+      let inverseEq = document.querySelector("#inverse-eq").value;
+      
+      if (equation != "" || inverseEq != ""){
+
+        try{
+
+          if (equation != "" && inverseEq == ""){
+            // graphOptions  = {};
+            // functionPlot(graphOptions);
+            graphOptions = removeInverse(graphOptions);
+
+            let graph     = drawGraph(equation);
+
+          }else if ( equation == "" && inverseEq != ""){
+            addInverse("#inverse-eq",graphOptions);
+            // functionPlot(graphOptions);
+          }else {
+            drawGraph(equation);
+            addInverse("#inverse-eq", graphOptions)
+            functionPlot(graphOptions);
+          }
+
+
+          
+          calculateDerivative(equation);
+          clearAllFields();
+
+        }catch (error){
+          console.log(error.toString())
+        }
+
+      }else {
+        // se sobrar tempo podemos usar o remodal pra mostrar um alerta mais bonito e user-friendly
+        alert("Campo da lei da função não pode ficar em branco!")
+      }
+      
+      console.log(`O resultado da derivada é: ${calculateDerivative(equation)}`);  
+    };
+
+    document.getElementById('limit-form').onsubmit = function (event) {
+
+      event.preventDefault();
+      let equation = document.querySelector("#eq").value;
+      let xToLimit = document.querySelector("#limit-value").value;
+      let limit = calculateLimit(equation, xToLimit);
+      console.log(`O resultado do limite é: ${limit}`);
     }
-    catch (err) {
-      console.log(err);
-      alert(err);
-    }
-  }
 
-  function addInverse (equationId){
-    let inverseEq = document.querySelector(equationId).value;
-    // temos que dar o update no gráfico
-
-    graphOptions.data[1] = {
-
-      fn: inverseEq,
-      color:"#D32F2F",
-      sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
-      graphType: 'polyline',
-      // derivative:{
-      //   fn: calculateDerivative(inverseEq, "y"),
-      //   // x0: 2,
-      //   updateOnMouseMove:true
-      // }
-    }
-
-    functionPlot(graphOptions);
-
-  }
-
-  document.getElementById('graph-form').onsubmit = function (event) {
-    let equation = document.querySelector("#eq").value;
-    let inverseEq = document.querySelector("#inverse-eq").value;
-    event.preventDefault();
-    drawGraph("#eq");
     
-    calculateDerivative(equation);
-    if (inverseEq != ""){
-      addInverse("#inverse-eq");
-      // funtionPlot(graphOptions);
-    }
-    
-    document.querySelector("#derivative-result").textContent = `O resultado da derivada é: ${calculateDerivative(equation)}`;
-    MathJax.Hub.Queue(["Typeset",MathJax.Hub,"plot"]);  
-  };
 
-  document.getElementById('limit-form').onsubmit = function (event) {
+    // initialize with an example expression
+    //expr.value = 'sqrt(75 / 3) + det([[-1, 2], [3, 1]]) - sin(pi / 4)^2';
+    funcaoPrev.innerHTML  = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
+    inversePrev.innerHTML = '$$' + math.parse(inverse.value).toTex({parenthesis: parenthesis}) + '$$';
+    limitPrev.innerHTML  = '$$' + math.parse(limit.value).toTex({parenthesis: parenthesis}) + '$$';
 
-    event.preventDefault();
-    let equation = document.querySelector("#eq").value;
-    let xToLimit = document.querySelector("#x-to-limit").value;
-    let limit = calculateLimit(equation, xToLimit);
-    document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
-  }
+    // expr.oninput = function () {
 
-  var expr        = document.getElementById('eq'),
-      pretty      = document.getElementById('pretty'),
-      parenthesis = 'auto',
-      implicit    = 'show';
+    //   try {
+    //     // graphOptions.data =[];
+    //     var latexOne = formatToTex(expr.value);
+    //     console.log('LaTeX expression:', latex);
+    //     // display and re-render the expression
+    //     var previewOne = MathJax.Hub.getAllJax('funcao-preview')[0];
+    //     MathJax.Hub.Queue(['Text', previewOne, latexOne]);
+    //   }
+    //   catch (err) {
+    //     console.log(err.toString());
+    //   }
+    // };
 
-  // initialize with an example expression
-  //expr.value = 'sqrt(75 / 3) + det([[-1, 2], [3, 1]]) - sin(pi / 4)^2';
-  pretty.innerHTML = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
-
-  //result.innerHTML = math.format(math.eval(expr.value));
-
-  expr.oninput = function () {
-
-    try {
-      // graphOptions.data =[];
-      var latex = formatToTex(expr.value);
-      console.log('LaTeX expression:', latex);
-      // display and re-render the expression
-      var elem = MathJax.Hub.getAllJax('pretty')[0];
-      MathJax.Hub.Queue(['Text', elem, latex]);
-    }
-    catch (err) {
-      console.log(err.toString());
-    }
-  };
+    // inverse.oninput = function () {
+    //   try {
+        
+    //     var latexTwo = formatToTex(inverse.value);
+    //     var previewTwo = MathJax.Hub.getAllJax('inversa-preview')[0];
+    //     MathJax.Hub.Queue(['Text', previewTwo, latexTwo]);
+    //   }
+    //   catch (err) {
+    //     console.log(err.toString());
+    //   }
+    // }
 
 
-  function formatToTex (expressionValue){
-    var node = math.parse(expressionValue);
-    var latex;
-    if (node){
-      latex =  node.toTex({parenthesis: "auto", implicit: "show"});
-    }else {
-      latex = "";
-    }
-    return `${latex}`;
-  }
 
+  </script>
+  <script src="js/init.js"></script>
 
-</script>
-</body>
+  </body>
 </html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>math.js | plot</title>
+  <meta charset="utf-8">
+
+
+  <!-- load http://maurizzzio.github.io/function-plot/ -->
+  <script src="js/d3.min.js"></script>
+  <script src="js/function-plot.js"></script>
+  <script src="js/math.js"></script>
+  <style type="text/css" rel="stylesheet" href="css/bootstrap.css"></style>
+  <style type="text/css" rel="stylesheet" href="css/bootstrap-theme.css"></style>
+  <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.3/MathJax.js?config=default.js"></script>-->
+  <script type="text/javascript"
+          src="js/MathJax/MathJax.js">
+  </script>
+  <script src="js/MathJax/config/default.js"></script>
+
+  <style>
+    input[type=text] {
+      width: 300px;
+    }
+    input {
+      padding: 6px;
+    }
+    body, html, input {
+      font-family: sans-serif;
+      font-size: 11pt;
+
+    }
+    form {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+<form id="graph-form">
+  <label for="eq">Digite a função:</label>
+  <input type="text" id="eq" placeholder="(x-1)/(3-x)" value="" required="" />
+  <br>
+  <label for="inverse-eq">Digite a função inversa:</label>
+  <input type="text" id="inverse-eq" placeholder="(3y+1)/(y+1)" value=""/>
+  <br>
+  <input type="submit" value="Plotar gráfico" />
+</form>
+
+<form id="limit-form">
+  <label for="x-to-limit">Digite o valor para calcular o limite:</label>
+  <input type="text" id="x-to-limit" placeholder="2" />
+  <br>
+  <input type="submit" name="limit" value="Calcular Limite">
+</form>
+
+<div id="plot"></div>
+<p id="derivative-result"></p>
+<p id="limit-result"></p>
+<div style="padding: 20px; border:1px solid #444; -webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;">
+  <div id="pretty"></div>
+</div>
+
+<p>
+  Plot library: <a href="https://github.com/maurizzzio/function-plot">https://github.com/maurizzzio/function-plot</a>
+</p>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/Ratio-0.4.1.min.js"></script>
+<script type="text/javascript" src="js/nerdamer.core.js"></script>
+<script type="text/javascript" src="js/Calculus.js"></script>
+
+<script>
+
+  var graphOptions = {}
+
+  function calculateLimit (equation, xToLimit){
+    parser = math.parser();
+
+    if (equation.indexOf('/') >=0){
+      // temos que pegar a equação antes da barra e a equação depois da barra para dar eval separado
+      // result = numerador + '/'+ denominador
+      // em seguida mandamos o Ratio simplificar..
+
+      // separamos as equações
+      numerador   = equation.split("/")[0].replace("(","").replace(")","");
+      denominador = equation.split("/")[1].replace("(","").replace(")","");
+
+      // validamos e calculamos os valores dos limites
+      numerador   = parser.eval("f(x)="+numerador);
+      numerador   = parser.eval("f("+xToLimit+")");
+      console.log("Numerador: "+numerador);
+
+      denominador = parser.eval("f(x)="+denominador);
+      denominador = parser.eval("f("+xToLimit+")");
+      console.log("Denominador: "+denominador);
+
+      // montamos o resultado
+      result = numerador + "/" + denominador; //type string
+      console.log("Resultado: "+ result);
+    }
+    else{
+      result = parser.eval("f(x)="+equation);
+
+      if (Number.isInteger(parser.eval("f("+xToLimit+")"))){
+        result = parseInt(parser.eval("f("+xToLimit+")"));
+      }else{
+        result = parseFloat(math.format(parser.eval("f("+xToLimit+")"),{precision:4}));
+
+        console.log("Wasn't an integer")
+      }
+    }
+
+    if (typeof result == "string" || !Number.isInteger(result)){
+      // usar o Ratio
+      result = Ratio.parse(result).simplify();
+    }else if (isNaN(result)){
+      // deu indeterminação
+      result = "0/0 (Indeterminação matemática)";
+    }
+    return result;
+  }
+
+  function calculateDerivative (equation, symbol){
+    try {
+      var derivative = nerdamer (`diff(${equation},x)`);
+    }catch(err){
+      console.log("Unsupported function to calculate derivative")
+      return;
+    }
+    
+    return derivative.toString();
+  }
+  
+
+  function drawGraph(equationId){
+    let equation = document.querySelector(equationId).value;
+    graphOptions = {
+      target: '#plot',
+      data: [{
+        fn: equation,
+        color:"#007C4B",
+        sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
+        graphType: 'polyline',
+        // derivative:{
+        //   fn: calculateDerivative(equation, "x"),
+        //   // x0: 2,
+        //   updateOnMouseMove:true
+        // }
+      }]
+    }
+    
+    try {
+      functionPlot(graphOptions);
+    }
+    catch (err) {
+      console.log(err);
+      alert(err);
+    }
+  }
+
+  function addInverse (equationId){
+    let inverseEq = document.querySelector(equationId).value;
+    // temos que dar o update no gráfico
+
+    graphOptions.data[1] = {
+
+      fn: inverseEq,
+      color:"#D32F2F",
+      sampler: 'builtIn',  // this will make function-plot use the evaluator of math.js
+      graphType: 'polyline',
+      // derivative:{
+      //   fn: calculateDerivative(inverseEq, "y"),
+      //   // x0: 2,
+      //   updateOnMouseMove:true
+      // }
+    }
+
+    functionPlot(graphOptions);
+
+  }
+
+  document.getElementById('graph-form').onsubmit = function (event) {
+    let equation = document.querySelector("#eq").value;
+    let inverseEq = document.querySelector("#inverse-eq").value;
+    event.preventDefault();
+    drawGraph("#eq");
+    
+    calculateDerivative(equation);
+    if (inverseEq != ""){
+      addInverse("#inverse-eq");
+      // funtionPlot(graphOptions);
+    }
+    
+    document.querySelector("#derivative-result").textContent = `O resultado da derivada é: ${calculateDerivative(equation)}`;
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub,"plot"]);  
+  };
+
+  document.getElementById('limit-form').onsubmit = function (event) {
+
+    event.preventDefault();
+    let equation = document.querySelector("#eq").value;
+    let xToLimit = document.querySelector("#x-to-limit").value;
+    let limit = calculateLimit(equation, xToLimit);
+    document.querySelector("#limit-result").textContent = `O resultado do limite é: ${limit}`;
+  }
+
+  var expr        = document.getElementById('eq'),
+      pretty      = document.getElementById('pretty'),
+      parenthesis = 'auto',
+      implicit    = 'show';
+
+  // initialize with an example expression
+  //expr.value = 'sqrt(75 / 3) + det([[-1, 2], [3, 1]]) - sin(pi / 4)^2';
+  pretty.innerHTML = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
+
+  //result.innerHTML = math.format(math.eval(expr.value));
+
+  expr.oninput = function () {
+
+    try {
+      // graphOptions.data =[];
+      var latex = formatToTex(expr.value);
+      console.log('LaTeX expression:', latex);
+      // display and re-render the expression
+      var elem = MathJax.Hub.getAllJax('pretty')[0];
+      MathJax.Hub.Queue(['Text', elem, latex]);
+    }
+    catch (err) {
+      console.log(err.toString());
+    }
+  };
+
+
+  function formatToTex (expressionValue){
+    var node = math.parse(expressionValue);
+    var latex;
+    if (node){
+      latex =  node.toTex({parenthesis: "auto", implicit: "show"});
+    }else {
+      latex = "";
+    }
+    return `${latex}`;
+  }
+
+
+</script>
+</body>
+</html>
