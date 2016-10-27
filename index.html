@@ -10,6 +10,7 @@
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link rel="stylesheet" href="css/animate.css">
+
   <script src="https://use.fontawesome.com/cf34f4bf55.js"></script>
   <script src="js/d3.min.js"></script>
   <script src="js/function-plot.js"></script>
@@ -68,7 +69,7 @@
   </script>
 </head>
 <body>
-
+<div id="page-wrapper">
   <nav class="indigo" role="navigation">
     <div class="nav-wrapper container">
       <a id="logo-container" href="#" class="brand-logo">
@@ -181,27 +182,28 @@
       </div>
   </div>
 
+  <!-- Funções Prontas Section -->
   <div class="section">
     <div class="container">
       <div class="row">
-        <div class="col m12">
+        <div class="col m12 s12">
           <h3 class="light left section-title">Funções prontas</h3>
         </div>
       </div>  
       <div class="row">
-        <div class="col m6">
+        <div class="col m5 s10 offset-s1">
           <p class="justify">Caso você tenha dificuldade em pensar em alguma função, temos algumas já prontas!</p>
           <p class="justify">É só clicar e ser feliz ;) !</p>
         </div>
-        <div class="col m6">
+        <div class="col m6 offset-m1 s12">
           <div class="row">
-            <div class="col m6 right">
-              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+            <div class="col m6 s10 offset-1 right">
+              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.4s" >
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('x^2+4x+20')">$f(x) = {x^2+4x+20}$</a>
               </div>
             </div>
-            <div class="col m6 right">
-              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+            <div class="col m6 s10 offset-1 right">
+              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.2s">
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('10x-50')" >$f(x) = {10x-50}$</a>
 
               </div>
@@ -210,12 +212,12 @@
 
           <div class="row">
             <div class="col m6 right">
-              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.8s">
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('4^x-4')" >$f(x) = {4^x-4}$</a>
               </div>
             </div>
             <div class="col m6 right">
-              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.6s">
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('log(4x-4)')">$f(x) = {log(4x-4)}$</a>
               </div>
             </div>
@@ -223,12 +225,12 @@
 
           <div class="row">
             <div class="col m6 right">
-              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="1.2s">
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:15px;" onclick="drawGraph('(x^2+5)/(5x+1)')">$f(x) = \frac{x^2+5}{5x+1}$</a>
               </div>
             </div>
             <div class="col m6 right">
-              <div class="card-panel indigo hoverable center-align" style="padding: 6px;">
+              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="1s">
                 <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:15px;" onclick="drawGraph('nthRoot(x^2+2, 3)')">$f(x) = {\sqrt[3]{x^2+2}}$</a>
               </div>
             </div>
@@ -328,10 +330,10 @@
         <div class="col m6 right">
           <div class="card-panel hoverable center-align" id="resultados-panel">
             <h5 class="light section-title">Resultados:</h5>
-            <p class="left-align">A função calculada: </p>
-            <p class="left-align">A inversa da função: </p> <!-- Só mostrar esse texto se houver inversa digitada -->
-            <p class="left-align">O resultado da derivada da função: </p>
-            <p class="left-align">O resultado da derivada da função: </p>
+            <p class="left-align" id="function-result">A função calculada: </p>
+            <p class="left-align" id="inverse-result">A inversa da função: </p> <!-- Só mostrar esse texto se houver inversa digitada -->
+            <p class="left-align" id="derivative-result">O resultado da derivada da função: </p>
+            <p class="left-align" id="limir-result">O resultado do limite da função: </p>
           </div>
         </div>
       </div>
@@ -346,10 +348,27 @@
       </div>
     </div>
   </footer>
+  </div>
+
+  <div class="preloader-overlay">
+    <div class="preloader-wrapper big active center-align">
+      <div class="spinner-layer spinner-indigo-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!--  Scripts-->
   <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script src="js/materialize.min.js"></script>
+  
+  <script src="js/materialize.js"></script>
+  <script src="js/imagesloaded.pkgd.min.js"></script>
   <script src="js/wow.min.js"></script>
   <script src="js/Ratio-0.4.1.min.js"></script>
   <script type="text/javascript" src="js/nerdamer.core.js"></script>
@@ -363,52 +382,61 @@
 
     var expr            = document.getElementById('eq'),
         inverse         = document.getElementById('inverse-eq'),
-        limit          = document.getElementById('limit-value'),
+        limit           = document.getElementById('limit-value'),
         funcaoPrev      = document.getElementById('funcao-preview'),
         inversePrev     = document.getElementById('inversa-preview'),
-        limitPrev      = document.getElementById('limite-preview'),
+        limitPrev       = document.getElementById('limite-preview'),
         parenthesis     = 'auto',
-        implicit        = 'show',
-        graphOptions    = {};
+        implicit        = 'show';
+        
 
     
 
     document.getElementById('graph-form').onsubmit = function (event) {
       event.preventDefault();
+      $("#plot").html("");
+      //functionPlot(graphOptions);
 
-      functionPlot(graphOptions);
-
-      let equation = document.querySelector("#eq").value;
-      let inverseEq = document.querySelector("#inverse-eq").value;
+      let equation = expr.value;
+      let inverseEq = inverse.value;
+      let graphOptions    = initGraph();
       
       if (equation != "" || inverseEq != ""){
 
-        try{
 
-          if (equation != "" && inverseEq == ""){
+          if (equation != "" && inverseEq == ""){ // só digitou lei da função
             // graphOptions  = {};
             // functionPlot(graphOptions);
-            graphOptions = removeInverse(graphOptions);
+            if (typeof graphOptions.data[1] != null){
+              graphOptions = removeInverse(graphOptions);  
+            }
+          
+          graphOptions     = generateGraph(graphOptions, equation);
 
-            let graph     = drawGraph(equation);
-
-          }else if ( equation == "" && inverseEq != ""){
-            addInverse("#inverse-eq",graphOptions);
-            // functionPlot(graphOptions);
-          }else {
-            drawGraph(equation);
-            addInverse("#inverse-eq", graphOptions)
-            functionPlot(graphOptions);
+          }else if ( equation == "" && inverseEq != ""){ // só digitou lei da inversa
+            alert("Campo da lei da função não pode ficar em branco.")
+          }else { // digitou os dois campos
+            console.log("aqui");  
+            graphOptions = generateGraph(graphOptions, equation);
+            graphOptions = generateInverse(graphOptions, "#inverse-eq")
           }
+            functionPlot(graphOptions);
 
+            function generateResults (func, inverse, limit, derivative){
+              var funcao = func;
+              var inversa = inverse;
+              var limite = limit;
+              var derivada = derivative;
+              // para funcao e inversa, temos que adicionar o f(x) e transformar em TeX
+              // Para limite temos que adicionar a notação LaTeX para limite e concatenar com o resultado do limite
+
+
+            }
 
           
           calculateDerivative(equation);
           clearAllFields();
 
-        }catch (error){
-          console.log(error.toString())
-        }
 
       }else {
         // se sobrar tempo podemos usar o remodal pra mostrar um alerta mais bonito e user-friendly
