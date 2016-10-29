@@ -26,7 +26,7 @@
       max-width: 100%;
     }
   </style>
-    <script>
+  <script>
     //
     //  Use a closure to hide the local variables from the
     //  global namespace
@@ -36,32 +36,34 @@
       var funcaoPreview = null;       // the element jax for the math output.
       var inversaPreview = null; 
       var limitePreview = null; 
+      var derivativePreview = null;
+          
+        // MathJax.Callback.Queue([UpdateMath()])
+          
 
-      //
-      //  Get the element jax when MathJax has produced it.
-      //
-      QUEUE.Push(function () {
-        funcaoPreview   = MathJax.Hub.getAllJax("funcao-preview")[0];
-        inversaPreview  = MathJax.Hub.getAllJax("inversa-preview")[0];
-        limitePreview  = MathJax.Hub.getAllJax("limite-preview")[0];
-
-      });
-
-      //
-      //  The onchange event handler that typesets the
-      //  math entered by the user
-      //
-      window.UpdateMath = function (TeX,element) {
-        switch (element){
+      window.UpdateMath = function (TeX,type, elementToUpdate) {
+        switch (type){
           case 'funcao':
-            QUEUE.Push(["Text",funcaoPreview,"\\displaystyle{"+TeX+"}"]);
+            funcaoPreview   = MathJax.Hub.getAllJax(elementToUpdate)[0];
+            QUEUE.Push(["Text",funcaoPreview,"\\displaystyle{f(x) = "+TeX+"}"]);
             break;
           case 'inversa': 
-            QUEUE.Push(["Text",inversaPreview,"\\displaystyle{"+TeX+"}"]);
+            inversaPreview  = MathJax.Hub.getAllJax(elementToUpdate)[0];
+            QUEUE.Push(["Text",inversaPreview,"\\displaystyle{f(x) = "+TeX+"}"]);
             break;
           case 'limite':
-            QUEUE.Push(["Text",limitePreview,"\\displaystyle{"+TeX+"}"]);  
+            limitePreview  = MathJax.Hub.getAllJax(elementToUpdate)[0];
+            QUEUE.Push(["Text",limitePreview,"\\lim_{x \\to "+TeX+"}\\;f(x)\\"]);  
             break;
+          // case 'limite-result':
+          //   limitePreview  = MathJax.Hub.getAllJax(elementToUpdate)[0];
+          //   QUEUE.Push(["Text",limitePreview,"\\lim_{x \\to "+TeX+"}\\;f(x)\\"]);  
+          //   break;
+          case 'derivada':
+            derivativePreview  = MathJax.Hub.getAllJax(elementToUpdate)[0];
+            QUEUE.Push(["Text",derivativePreview,"\\displaystyle{"+TeX+"}"]);  
+            break;
+
         }
         
       }
@@ -133,7 +135,7 @@
         </div>
         <br><br>
         <div class="row center">
-          <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light pink wow fadeInUp">Começar</a>
+          <a href="#aplicacao" id="download-button" class="btn-large waves-effect waves-light pink wow fadeInUp">Começar</a>
         </div>
         <br><br>
       </div>
@@ -242,7 +244,7 @@
 
   <!-- <div class="divider"></div> -->
   <!-- Gráfico Section -->
-  <div class="section">
+  <div class="section" id="aplicacao">
     <div class="container">
       <div class="row">
 
@@ -254,7 +256,7 @@
             <div class="row">
               <div class="col m6">
                 <div class="input-field">
-                  <input id="eq" type="text" onkeyup="UpdateMath(formatToTex(this.value, 'funcao'))">
+                  <input id="eq" type="text" onkeyup="UpdateMath(formatToTex(this.value), 'funcao', 'funcao-preview')">
                   <label for="eq">Digite a lei da função</label>
                 </div>
               </div>
@@ -262,7 +264,7 @@
             
               <div class="col m6">
                 <div class="input-field">
-                  <input id="inverse-eq" type="text" onkeyup="UpdateMath(formatToTex(this.value,'inversa'))">
+                  <input id="inverse-eq" type="text" onkeyup="UpdateMath(formatToTex(this.value),'inversa','inversa-preview')">
                   <label for="inverse-eq">Digite a lei da função inversa</label>
                 </div>
               </div>
@@ -299,7 +301,7 @@
             <div class="row">
               <div class="col m12">
                 <div class="input-field">
-                  <input id="limit-value" type="text" onkeyup="UpdateMath(formatToTex(this.value,'limite'))">
+                  <input id="limit-value" type="text" onkeyup="UpdateMath(formatToTex(this.value),'limite','limite-preview')">
                   <label for="limit-value">Digite um valor para o limite:</label>
                 </div>
               </div>
@@ -309,6 +311,8 @@
                   <div id="limite-preview"></div>
                 </div>
               </div>
+            </div>
+            <div class="row">
               <!-- Botão de Calcular Limite -->
               <div class="col m6">
                 <input type="submit" value="Calcular limite" class="btn waves-effect waves-light pink" style="font-size:16px;width: 100%" id="limit-button"></input>
@@ -330,10 +334,10 @@
         <div class="col m6 right">
           <div class="card-panel hoverable center-align" id="resultados-panel">
             <h5 class="light section-title">Resultados:</h5>
-            <p class="left-align" id="function-result">A função calculada: </p>
-            <p class="left-align" id="inverse-result">A inversa da função: </p> <!-- Só mostrar esse texto se houver inversa digitada -->
-            <p class="left-align" id="derivative-result">O resultado da derivada da função: </p>
-            <p class="left-align" id="limir-result">O resultado do limite da função: </p>
+            <p class="left-align" id="function-result"></p>
+            <p class="left-align" id="inverse-result"></p>
+            <p class="left-align" id="derivative-result"></p>
+            <p class="left-align" id="limit-result"></p>
           </div>
         </div>
       </div>
@@ -383,23 +387,40 @@
     var expr            = document.getElementById('eq'),
         inverse         = document.getElementById('inverse-eq'),
         limit           = document.getElementById('limit-value'),
+        equation        = expr.value,
+        inverseEq       = inverse.value,
+
         funcaoPrev      = document.getElementById('funcao-preview'),
         inversePrev     = document.getElementById('inversa-preview'),
         limitPrev       = document.getElementById('limite-preview'),
-        parenthesis     = 'auto',
-        implicit        = 'show';
-        
 
-    
+        parenthesis     = 'all',
+        implicit        = 'show',
+        derivative      = "";
+
+    funcaoPrev.innerHTML  = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
+    inversePrev.innerHTML = '$$' + math.parse(inverse.value).toTex({parenthesis: parenthesis}) + '$$';
+    limitPrev.innerHTML   = '$$' + math.parse(limit.value).toTex({parenthesis: parenthesis}) + '$$';
+
+
+      var funcResult = document.getElementById("function-result").innerHTML  = 'A função digitada: &nbsp;$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$';
+
+      var inverseResult = document.getElementById("inverse-result").innerHTML  = 'A função inversa digitada: &nbsp;$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$';
+
+      var derivativeResult = document.getElementById("derivative-result").innerHTML  = "O resultado da derivada ': &nbsp;$" + math.parse(derivative).toTex({parenthesis: parenthesis}) + '$';
+
+      var limitResult = document.getElementById("limit-result").innerHTML  = "O resultado do limite é : $"+math.parse(limit.value).toTex({parenthesis: parenthesis}) + '$';
 
     document.getElementById('graph-form').onsubmit = function (event) {
       event.preventDefault();
       $("#plot").html("");
       //functionPlot(graphOptions);
-
-      let equation = expr.value;
-      let inverseEq = inverse.value;
+      equation        = expr.value;
+      inverseEq       = inverse.value;
       let graphOptions    = initGraph();
+
+      fadeFunctionsOut();
+      
       
       if (equation != "" || inverseEq != ""){
 
@@ -411,31 +432,25 @@
               graphOptions = removeInverse(graphOptions);  
             }
           
-          graphOptions     = generateGraph(graphOptions, equation);
+            graphOptions     = generateGraph(graphOptions, equation);
 
           }else if ( equation == "" && inverseEq != ""){ // só digitou lei da inversa
             alert("Campo da lei da função não pode ficar em branco.")
           }else { // digitou os dois campos
-            console.log("aqui");  
+
             graphOptions = generateGraph(graphOptions, equation);
             graphOptions = generateInverse(graphOptions, "#inverse-eq")
           }
-            functionPlot(graphOptions);
 
-            function generateResults (func, inverse, limit, derivative){
-              var funcao = func;
-              var inversa = inverse;
-              var limite = limit;
-              var derivada = derivative;
-              // para funcao e inversa, temos que adicionar o f(x) e transformar em TeX
-              // Para limite temos que adicionar a notação LaTeX para limite e concatenar com o resultado do limite
+          functionPlot(graphOptions);
+          derivative = calculateDerivative(equation);
 
-
-            }
-
+          UpdateMath(formatToTex(equation),"funcao","function-result");
+          UpdateMath(formatToTex(inverseEq),"inversa", "inverse-result");
           
-          calculateDerivative(equation);
-          clearAllFields();
+          UpdateMath(formatToTex(derivative),"derivada","derivative-result")          
+          // TODO: Fazer verificação pra eliminar os textos: 'undefined' nos parágrafos que estão sem dados
+          clearFunctionFields();
 
 
       }else {
@@ -443,54 +458,34 @@
         alert("Campo da lei da função não pode ficar em branco!")
       }
       
-      console.log(`O resultado da derivada é: ${calculateDerivative(equation)}`);  
+      // console.log(`O resultado da derivada é: ${calculateDerivative(equation)}`);  
     };
 
     document.getElementById('limit-form').onsubmit = function (event) {
 
       event.preventDefault();
-      let equation = document.querySelector("#eq").value;
-      let xToLimit = document.querySelector("#limit-value").value;
-      let limit = calculateLimit(equation, xToLimit);
-      console.log(`O resultado do limite é: ${limit}`);
+
+      var equationToLimit = equation;
+      var limitEq  = limit;
+      fadeLimitOut();
+
+      if(limitEq != ""){
+      
+        let xToLimit = limitEq.value;
+        let limit = calculateLimit(equation, xToLimit); // calcula o limite
+
+        if (typeof limit == "string"){
+          document.querySelector("#limit-result").textContent += limit;
+        }else{
+          document.querySelector("#limit-result").textContent += UpdateMath(xToLimit,"limite","limit-result")+" = "+limit;
+          ;
+        }
+        // console.log(`O resultado do limite é: ${limit}`);
+        clearLimitField();
+      }else {
+        alert("Limite em branco, preencha o campo e tente novamente!");
+      }
     }
-
-    
-
-    // initialize with an example expression
-    //expr.value = 'sqrt(75 / 3) + det([[-1, 2], [3, 1]]) - sin(pi / 4)^2';
-    funcaoPrev.innerHTML  = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
-    inversePrev.innerHTML = '$$' + math.parse(inverse.value).toTex({parenthesis: parenthesis}) + '$$';
-    limitPrev.innerHTML  = '$$' + math.parse(limit.value).toTex({parenthesis: parenthesis}) + '$$';
-
-    // expr.oninput = function () {
-
-    //   try {
-    //     // graphOptions.data =[];
-    //     var latexOne = formatToTex(expr.value);
-    //     console.log('LaTeX expression:', latex);
-    //     // display and re-render the expression
-    //     var previewOne = MathJax.Hub.getAllJax('funcao-preview')[0];
-    //     MathJax.Hub.Queue(['Text', previewOne, latexOne]);
-    //   }
-    //   catch (err) {
-    //     console.log(err.toString());
-    //   }
-    // };
-
-    // inverse.oninput = function () {
-    //   try {
-        
-    //     var latexTwo = formatToTex(inverse.value);
-    //     var previewTwo = MathJax.Hub.getAllJax('inversa-preview')[0];
-    //     MathJax.Hub.Queue(['Text', previewTwo, latexTwo]);
-    //   }
-    //   catch (err) {
-    //     console.log(err.toString());
-    //   }
-    // }
-
-
 
   </script>
   <script src="js/init.js"></script>

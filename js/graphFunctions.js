@@ -26,14 +26,14 @@ function calculateLimit(equation, xToLimit) {
   } else {
     result = parser.eval("f(x)=" + equation);
 
-  if (Number.isInteger(parser.eval("f(" + xToLimit + ")"))) {
-    result = parseInt(parser.eval("f(" + xToLimit + ")"));
-  } else {
-    result = parseFloat(math.format(parser.eval("f(" + xToLimit + ")"), { precision: 4 }));
+    if (Number.isInteger(parser.eval("f(" + xToLimit + ")"))) {
+      result = parseInt(parser.eval("f(" + xToLimit + ")"));
+    } else {
+      result = parseFloat(math.format(parser.eval("f(" + xToLimit + ")"), { precision: 4 }));
 
-    console.log("Wasn't an integer")
+      console.log("Wasn't an integer")
+    }
   }
-}
 
   if (typeof result == "string" || !Number.isInteger(result)) {
     // usar o Ratio
@@ -42,6 +42,7 @@ function calculateLimit(equation, xToLimit) {
     // deu indeterminação
     result = "0/0 (Indeterminação matemática)";
   }
+
   return result;
 }
 
@@ -57,8 +58,27 @@ function calculateDerivative(equation, symbol) {
 }
 
 function drawGraph(equationValue) {
+  graphOptions   = generateGraph({}, equationValue);
+
+  try {
+    functionPlot(graphOptions);
+    return graphOptions;
+
+  } catch (err) {
+    console.log(err);
+    alert(err);
+  }
+}
+function initGraph() {
+  return {
+  target: '#plot',
+  data: []
+  };
+}
+
+function generateGraph(graphOptions, equationValue) {
   //let equation = document.querySelector(equationId).value;
-  let graphOptions = {
+  graphOptions = {
   target: '#plot',
   data: [{
       fn: equationValue,
@@ -71,24 +91,25 @@ function drawGraph(equationValue) {
       //   updateOnMouseMove:true
       // }
     }]
-  }  
-
-  try {
-    functionPlot(graphOptions);
-    return true;
-
-  } catch (err) {
-    console.log(err);
-    alert(err);
   }
+  return graphOptions;
+
+  // try {
+  //   functionPlot(graphOptions);
+  //   return graphOptions;
+
+  // } catch (err) {
+  //   console.log(err);
+  //   alert(err);
+  // }
 }
 
-function addInverse(equationId, graphOptions) {
+function generateInverse(graphOptions, equationId) {
   let inverseEq = document.querySelector(equationId).value;
-  let _graphOptions = graphOptions;
+  
   // temos que dar o update no gráfico
 
-  _graphOptions.data[1] = {
+  graphOptions.data[1] = {
 
     fn: inverseEq,
     color: "#D32F2F",
@@ -100,8 +121,7 @@ function addInverse(equationId, graphOptions) {
     //   updateOnMouseMove:true
     // }
   }
-
-  functionPlot(_graphOptions);
+  return graphOptions;
 }
 
 function removeInverse(graphOptions){
@@ -122,15 +142,34 @@ function formatToTex (expressionValue){
   return `${latex}`;
 }
 
-function clearAllFields () {
+function clearFunctionFields () {
   let func = $("#eq");
   let inverse = $("#inverse-eq");
-  let limit = $("#limit-value");
+  
 
   func.val("");
   $(func).siblings("label").removeClass("active");
-  limit.val("");
-  $(limit).siblings("label").removeClass("active");
   inverse.val("");
   $(inverse).siblings("label").removeClass("active");
+}
+
+function clearLimitField() {
+  let limit = $("#limit-value");
+  limit.val("");
+  $(limit).siblings("label").removeClass("active");
+}
+
+function fadeFunctionsOut (){
+  $(".preview").eq(0).fadeOut('1200', function() {
+    
+  });
+  $(".preview").eq(1).fadeOut('1200', function() {
+    
+  });
+}
+
+function fadeLimitOut (){
+  $(".preview").eq(2).fadeOut('1200', function() {
+    
+  });
 }
