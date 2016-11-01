@@ -55,23 +55,32 @@
             limitePreview  = MathJax.Hub.getAllJax(elementToUpdate)[0];
             QUEUE.Push(["Text",limitePreview,"\\lim_{x \\to "+TeX+"}\\;f(x)\\"]);  
             break;
-          // case 'limite-result':
-          //   limitePreview  = MathJax.Hub.getAllJax(elementToUpdate)[0];
-          //   QUEUE.Push(["Text",limitePreview,"\\lim_{x \\to "+TeX+"}\\;f(x)\\"]);  
-          //   break;
           case 'derivada':
             derivativePreview  = MathJax.Hub.getAllJax(elementToUpdate)[0];
-            QUEUE.Push(["Text",derivativePreview,"\\displaystyle{"+TeX+"}"]);  
+            if (TeX.indexOf("Unsupported") != -1){
+              QUEUE.Push(["Text",derivativePreview,"\\displaystyle{Derivada\\;não\\;suportada}"]);
+            }else{
+              QUEUE.Push(["Text",derivativePreview,"\\displaystyle{"+TeX+"}"]);  
+            }
             break;
 
         }
         
       }
+
+      window.UpdateLimit = function(elementToUpdate, limitValue) {
+        var QUEUE = MathJax.Hub.queue; 
+        var limiteResult = null;
+        limiteResult  = MathJax.Hub.getAllJax(elementToUpdate)[0];
+        QUEUE.Push(["Text",limiteResult,"\\displaystyle\\lim_{x \\to "+limitValue+"}\\;f(x)"]);
+      }
+
     })();
   </script>
 </head>
 <body>
 <div id="page-wrapper">
+  <div class="navbar-fixed">
   <nav class="indigo" role="navigation">
     <div class="nav-wrapper container">
       <a id="logo-container" href="#" class="brand-logo">
@@ -115,15 +124,20 @@
         </svg><span class="logo-font">Graphs</span>
       </a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="#">Navbar Link</a></li>
+        <li><a class="btn waves-effect waves-light pink" href="#plot" data-scroll style="margin-left:0px;margin-right:0px">Começar</a></li>
       </ul>
-
       <ul id="nav-mobile" class="side-nav">
-        <li><a href="#">Navbar Link</a></li>
+        <li><a href="#sobre" data-scroll>Sobre</a></li>
+        <li><a href="#como-funciona" data-scroll>Como funciona</a></li>
+        <li><a href="#limitacoes" data-scroll>Limitações</a></li>
+        <li><a href="#funcoes-prontas" data-scroll>Funções prontas</a></li>
+        <li><a href="#aplicacao" data-scroll>Aplicação</a></li>
+
       </ul>
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
     </div>
   </nav>
+  </div>
 
   <div class="parallax-container">
     <div class="section no-pad-bot" id="index-banner">
@@ -135,7 +149,7 @@
         </div>
         <br><br>
         <div class="row center">
-          <a href="#aplicacao" id="download-button" class="btn-large waves-effect waves-light pink wow fadeInUp">Começar</a>
+          <a href="#aplicacao" id="download-button" class="btn-large waves-effect waves-light pink wow fadeInUp" data-scroll >Começar</a>
         </div>
         <br><br>
       </div>
@@ -144,48 +158,81 @@
   </div>
 
   <!-- Sobre Section -->
-  <div class="section">
+  <div class="section" id="sobre">
       <div class="container">
           <h3 class="light section-title wow bounceInLeft">Sobre</h3>
-          <div class="row valign-wrapper">
+          <div class="row main-row">
 
-              <div class="col m7 wow bounceInLeft">
+              <div class="col m7 s10 offset-s1 wow bounceInLeft">
                   <p class="justify">O <span class="logo-font">Graphs</span> é uma aplicação para realizar cálculos de funções e demonstrar seus devidos gráficos, calcular limites e derivadas de primeiro grau.</p>
-                  <p class="justify">Como foi feito por estudantes do 2º período de Ciência da Computação da FUMEC, tivemos algumas limitações ao desenvolver o site.</p>
-                  <p class="justify">Um desejo nosso era conseguir demonstrar o gráfico da inversa da função automaticamente, mas devido a dificuldade, fomos incapacitados de concluir nosso desejo.</p>
+                  <p class="justify">Este é o resultado de um trabalho duro e esforçado de jovens que estão se desenvolvendo cada vez mais, espero que gostem e possam usufruir deste site.</p>
+                  <p class="justify">O projeto completo está disponibilizado no seguinte GitHub: <a href="https://github.com/shaolinjr/graphsApp">GraphsApp</a>.Fiquem à vontade para baixar e modificar da forma como quiserem.</p>
               </div>
-              <div class="col m5 right-align wow fadeInRight">
-                  <img src="imgs/logo_sobre_circ.png" style="width:55%;margin: 0 auto"/>
+              <div class="col m5 s12 right-align wow fadeInRight section-img-wrapper">
+                  <img src="imgs/logo_sobre_circ.png" style="width:200px;margin: 0 auto"/>
               </div>
           </div>
       </div>
   </div>
 
-  <!-- Ajuda Section -->
-  <div class="section">
+  <!-- Como Funciona Section -->
+  <div class="section" id="como-funciona">
       <div class="container">
           <div class="row">
               <div class="col m12 wow bounceInRight">
                 <h3 class="light right section-title">Como funciona</h3>
               </div>
           </div>
-          <div class="row valign-wrapper">
+          <div class="row valign-wrapper main-row">
 
-              <div class="col m5 left-align wow fadeInLeft">
+              <div class="col m5 s12 left-align wow fadeInLeft section-img-wrapper">
                   <img src="imgs/ajuda.png" style="width:75%;margin: 0 auto"/>
               </div>
 
-              <div class="col m7 wow bounceInRight">
-                  <p class="justify">O <span class="logo-font">Graphs</span> é uma aplicação para realizar cálculos de funções e demonstrar seus devidos gráficos, calcular limites e derivadas de primeiro grau.</p>
-                  <p class="justify">Como foi feito por estudantes do 2º período de Ciência da Computação da FUMEC, tivemos algumas limitações ao desenvolver o site.</p>
-                  <p class="justify">Um desejo nosso era conseguir demonstrar o gráfico da inversa da função automaticamente, mas devido a dificuldade, fomos incapacitados de concluir nosso desejo.</p>
+              <div class="col m7 s10 offset-s1 wow bounceInRight">
+                  <p class="justify">O <span class="logo-font">Graphs</span> é capaz de plotar qualquer gráfico de uma função de apenas uma variável, derivar muitas funções, calcular o limite com valores reais e para lhe ajudar a experimentar nossa aplicação, aqui vão algumas dicas! .</p>
+                    <ul class="collapsible popout" data-collapsible="accordion">
+                      <li>
+                        <div class="collapsible-header"><img src="imgs/operations.png"/>Operadores</div>
+                        <div class="collapsible-body">
+                          <p>Comandos para executar as seguintes operações:</p>
+                          <p class="light operations-p"><b>Multiplicação:</b> * ou deixar implícito (ex: 2x ou 2*x)</p>
+                          <p class="light operations-p"><b>Potência:</b> ^ (ex: x^2)</p>
+                          <p class="light operations-p"><b>Raiz quadrada:</b> sqrt(equação) (ex: sqrt(2x) = √2x)</p>
+                          <p class="light operations-p"><b>Raiz de qualquer expoente:</b> nthRoot(equação, expoente) (ex: nthRoot(2x, 3))</p>
+                          <p class="light operations-p"><b>Fração:</b> numerador / denominador (ex: (2x)/(5x) )</p>
+                          
+                        </div>
+                      </li>
+                      <li>
+                        <div class="collapsible-header"><img src="imgs/charts.png" />Gráficos</div>
+                        <div class="collapsible-body">
+                          <p>Ao plotar o gráfico, poderão aparecer duas funções dependendo da forma como você preenche os dados, portanto, cada função tem sua cor:</p>
+                          <p class="light operations-p"><b>Função normal: </b><span style="color:#007C4B">Verde</span></p>
+                          <p class="light operations-p"><b>Função inversa: </b><span style="color:#D32F2F">Vermelho</span></p>
+
+                        </div>
+                      </li>
+                      <li>
+                        <div class="collapsible-header"><img src="imgs/func-laws.png" id="func-laws"/>Leis das funções</div>
+                        <div class="collapsible-body">
+                          <p class="operations-p" style="padding-top: 2rem !important">As leis das funções são seus polinômios, ou seja, a expressão que geralmente vem depois do "f(x) ="</p>
+                          <p class="operations-p">No <span class="logo-font">Graphs</span>, eles são digitados usando os operadores de acordo com sua vontade, aqui vão alguns exemplos:</p>
+                          <p class="light operations-p">x^2+5x+10&nbsp;&nbsp;&nbsp;&nbsp;10*x+5&nbsp;&nbsp;&nbsp;&nbsp;sqrt(x^3+5x)&nbsp;&nbsp;&nbsp;&nbsp;nthRoot(x^2+4x,3)</p>
+                          <!-- <p class="light operations-p">10*x+5</p>
+                          <p class="light operations-p">sqrt(x^3+5x)</p>
+                          <p class="light operations-p">nthRoot(x^2+4x,3)</p> -->
+                        </div>
+                      </li>
+                    </ul>
+                
               </div>
           </div>
       </div>
   </div>
 
   <!-- Funções Prontas Section -->
-  <div class="section">
+  <div class="section" id="funcoes-prontas">
     <div class="container">
       <div class="row">
         <div class="col m12 s12">
@@ -198,29 +245,32 @@
           <p class="justify">É só clicar e ser feliz ;) !</p>
         </div>
         <div class="col m6 offset-m1 s12">
-          <div class="row">
-            <div class="col m6 s10 offset-1 right">
-              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.4s" >
-                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('x^2+4x+20')">$f(x) = {x^2+4x+20}$</a>
-              </div>
-            </div>
-            <div class="col m6 s10 offset-1 right">
-              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.2s">
-                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('10x-50')" >$f(x) = {10x-50}$</a>
 
+          <div class="row">
+
+            <div class="col m6 s10 offset-s1 right">
+              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.4s" >
+                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('x^2+5x')" data-scroll>$f(x) = {x^2+5x}$</a>
               </div>
             </div>
+
+            <div class="col m6 s10 offset-s1 right">
+              <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.2s">
+                <a class="waves-effect waves-light btn-flat white-text " data-scroll style="text-transform: lowercase;font-size:16px;" href="#plot" onclick="drawGraph('10x-10')" >$f(x) = {10x-10}$</a>
+              </div>
+            </div>
+
           </div>
 
           <div class="row">
             <div class="col m6 right">
               <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.8s">
-                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('4^x-4')" >$f(x) = {4^x-4}$</a>
+                <a class="waves-effect waves-light btn-flat white-text " data-scroll style="text-transform: lowercase;font-size:16px;" href="#plot" onclick="drawGraph('4^x-4')" >$f(x) = {4^x-4}$</a>
               </div>
             </div>
             <div class="col m6 right">
               <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="0.6s">
-                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:16px;" onclick="drawGraph('log(4x-4)')">$f(x) = {log(4x-4)}$</a>
+                <a class="waves-effect waves-light btn-flat white-text " data-scroll style="text-transform: lowercase;font-size:16px;" href="#plot" onclick="drawGraph('log(4x-4)')">$f(x) = {log(4x-4)}$</a>
               </div>
             </div>
           </div>
@@ -228,12 +278,12 @@
           <div class="row">
             <div class="col m6 right">
               <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="1.2s">
-                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:15px;" onclick="drawGraph('(x^2+5)/(5x+1)')">$f(x) = \frac{x^2+5}{5x+1}$</a>
+                <a class="waves-effect waves-light btn-flat white-text " data-scroll style="text-transform: lowercase;font-size:15px;" href="#plot" onclick="drawGraph('(x^2+5)/(5x+1)')">$f(x) = \frac{x^2+5}{5x+1}$</a>
               </div>
             </div>
             <div class="col m6 right">
               <div class="card-panel indigo hoverable center-align wow fadeIn" style="padding: 6px;" data-wow-delay="1s">
-                <a class="waves-effect waves-light btn-flat white-text" style="text-transform: lowercase;font-size:15px;" onclick="drawGraph('nthRoot(x^2+2, 3)')">$f(x) = {\sqrt[3]{x^2+2}}$</a>
+                <a class="waves-effect waves-light btn-flat white-text " data-scroll style="text-transform: lowercase;font-size:15px;" href="#plot" onclick="drawGraph('nthRoot(x^2+2, 3)')">$f(x) = {\sqrt[3]{x^2+2}}$</a>
               </div>
             </div>
           </div>
@@ -242,7 +292,33 @@
     </div>
   </div>
 
-  <!-- <div class="divider"></div> -->
+  <!-- Limitacoes Section -->
+  <div class="section" id="limitacoes">
+      <div class="container">
+          <div class="row">
+              <div class="col m12 wow bounceInRight">
+                <h3 class="light right section-title">Limitações</h3>
+              </div>
+          </div>
+          <div class="row valign-wrapper">
+
+              <div class="col m5 left-align wow fadeInLeft">
+                  <img src="imgs/barrier.png" style="width:200px;margin: 0 auto"/>
+              </div>
+
+              <div class="col m7 wow bounceInRight">
+                  <p class="justify">O <span class="logo-font">Graphs</span> foi desenvolvido por estudantes do 2º perído do curso de Ciências da Computação, por isso ele possui algumas limitações:</p>
+                  <ul id ="limitacoes-list">
+                    <li class="light">Calcular derivada de funções com raiz acima do expoente 2;</li>
+                    <li class="light">Não é possível plotar o gráfico da inversa de função exponencial e nem logarítmica, tendo em vista que só podemos digitar leis de apenas uma variável;</li>
+                    <li class="light">Calcular limite tendendo ao infinito;</li>
+                    <li>Mais limitações serão percebidas ao longo do uso.</li>
+
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </div>
   <!-- Gráfico Section -->
   <div class="section" id="aplicacao">
     <div class="container">
@@ -288,7 +364,7 @@
             <div class="row">
               <!-- Botão de Plotar -->
               <div class="col m6">
-                <input type="submit" class="btn waves-effect waves-light pink" style="font-size:16px;width: 100%" value="Plotar gráfico"></input>
+                <input type="submit" class="btn waves-effect waves-light pink" style="font-size:16px;width: 100%" value="Plotar gráfico" href="#plot" data-scroll></input>
               </div>
             </div>
 
@@ -324,6 +400,7 @@
     </div>
   </div>
 
+  <!-- Resultados Section -->
   <div class="section">
     <div class="container">
       <div class="row">
@@ -336,7 +413,7 @@
             <h5 class="light section-title">Resultados:</h5>
             <p class="left-align" id="function-result"></p>
             <p class="left-align" id="inverse-result"></p>
-            <p class="left-align" id="derivative-result"></p>
+            <p class="left-align" id="derivative-result">O resultado da derivada de 1ª ordem é :</p>
             <p class="left-align" id="limit-result"></p>
           </div>
         </div>
@@ -348,7 +425,7 @@
   <footer class="page-footer pink" style="padding-top: 0px">  <!-- Colocar o padding top depois-->
     <div class="footer-copyright">
       <div class="container">
-      Made with <i class="fa fa-heart"></i> in 2016
+      Made with <i class="fa fa-coffee"></i> + <i class="fa fa-code"></i> and <i class="fa fa-heart"></i> in 2016
       </div>
     </div>
   </footer>
@@ -377,90 +454,113 @@
   <script src="js/Ratio-0.4.1.min.js"></script>
   <script type="text/javascript" src="js/nerdamer.core.js"></script>
   <script type="text/javascript" src="js/Calculus.js"></script>
+  <script type="text/javascript" src="js/smooth-scroll.min.js"></script>
   <script>
+    smoothScroll.init({
+      offset: 40
+    });
     new WOW().init();
   </script>
   <script type="text/javascript" src="js/graphFunctions.js"></script>
 
   <script>
 
-    var expr            = document.getElementById('eq'),
-        inverse         = document.getElementById('inverse-eq'),
-        limit           = document.getElementById('limit-value'),
-        equation        = expr.value,
-        inverseEq       = inverse.value,
+    // SET: Variáveis iniciais
 
-        funcaoPrev      = document.getElementById('funcao-preview'),
-        inversePrev     = document.getElementById('inversa-preview'),
-        limitPrev       = document.getElementById('limite-preview'),
+    // Inputs
+    var expr              = document.getElementById('eq'),
+        inverse           = document.getElementById('inverse-eq'),
+        limit             = document.getElementById('limit-value'),
 
-        parenthesis     = 'all',
-        implicit        = 'show',
-        derivative      = "";
+    // Valores dos inputs da função
+        equation          = expr.value,
+        inverseEq         = inverse.value,
 
+    // Elementos de preview (Função, inversa e limite)
+        funcaoPrev        = document.getElementById('funcao-preview'),
+        inversePrev       = document.getElementById('inversa-preview'),
+        limitPrev         = document.getElementById('limite-preview'),
+
+    // Options de renderização da função
+        parenthesis       = 'all',
+        implicit          = 'show',
+        derivative        = "";
+
+    // SET: Valores iniciais para os campos de preview
     funcaoPrev.innerHTML  = '$$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$$';
     inversePrev.innerHTML = '$$' + math.parse(inverse.value).toTex({parenthesis: parenthesis}) + '$$';
     limitPrev.innerHTML   = '$$' + math.parse(limit.value).toTex({parenthesis: parenthesis}) + '$$';
 
+    // SET: Valores inicias para os parágrafos de resultado
+    var funcResult = document.getElementById("function-result").innerHTML  = 'A função digitada: &nbsp;$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$';
 
-      var funcResult = document.getElementById("function-result").innerHTML  = 'A função digitada: &nbsp;$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$';
+    var derivativeResult = document.getElementById("derivative-result").innerHTML  += "&nbsp;$" + math.parse(derivative).toTex({parenthesis: parenthesis}) + '$';
 
-      var inverseResult = document.getElementById("inverse-result").innerHTML  = 'A função inversa digitada: &nbsp;$' + math.parse(expr.value).toTex({parenthesis: parenthesis}) + '$';
+    var inverseResult = document.getElementById("inverse-result").innerHTML  = 'A função inversa digitada: &nbsp;$' + math.parse(inverseEq).toTex({parenthesis: parenthesis}) + '$';  
 
-      var derivativeResult = document.getElementById("derivative-result").innerHTML  = "O resultado da derivada ': &nbsp;$" + math.parse(derivative).toTex({parenthesis: parenthesis}) + '$';
+    var limitResult = document.getElementById("limit-result").innerHTML  = "O resultado do limite é : &nbsp;$"+"\\displaystyle\\lim_{x \\to "+limit.value+"}\\;f(x)"+"$";
+    
 
-      var limitResult = document.getElementById("limit-result").innerHTML  = "O resultado do limite é : $"+math.parse(limit.value).toTex({parenthesis: parenthesis}) + '$';
+    // ACTIONS: Ações que serão executadas ao dar submit nos forms
 
+    // ACTION: Submit no form de função (Função e inversa)
     document.getElementById('graph-form').onsubmit = function (event) {
       event.preventDefault();
       $("#plot").html("");
       //functionPlot(graphOptions);
-      equation        = expr.value;
-      inverseEq       = inverse.value;
-      let graphOptions    = initGraph();
+      equation          = expr.value;
+      inverseEq         = inverse.value;
+      let graphOptions  = initGraph();
 
       fadeFunctionsOut();
-      
+      $("#resultados-panel").fadeIn("1200",function(){
+      $("#limit-result").css("display","none");
+      })
+      // $("#resultados-panel").fadeIn("1200", function(){
+
+      // });
       
       if (equation != "" || inverseEq != ""){
 
-
-          if (equation != "" && inverseEq == ""){ // só digitou lei da função
-            // graphOptions  = {};
-            // functionPlot(graphOptions);
-            if (typeof graphOptions.data[1] != null){
-              graphOptions = removeInverse(graphOptions);  
-            }
-          
-            graphOptions     = generateGraph(graphOptions, equation);
-
-          }else if ( equation == "" && inverseEq != ""){ // só digitou lei da inversa
-            alert("Campo da lei da função não pode ficar em branco.")
-          }else { // digitou os dois campos
-
-            graphOptions = generateGraph(graphOptions, equation);
-            graphOptions = generateInverse(graphOptions, "#inverse-eq")
+        if (equation != "" && inverseEq == ""){ // só digitou lei da função
+          if (typeof graphOptions.data[1] != null){
+            graphOptions = removeInverse(graphOptions);  
           }
 
-          functionPlot(graphOptions);
-          derivative = calculateDerivative(equation);
+          $("#inverse-result").css("display","none");
 
-          UpdateMath(formatToTex(equation),"funcao","function-result");
-          UpdateMath(formatToTex(inverseEq),"inversa", "inverse-result");
-          
-          UpdateMath(formatToTex(derivative),"derivada","derivative-result")          
-          // TODO: Fazer verificação pra eliminar os textos: 'undefined' nos parágrafos que estão sem dados
-          clearFunctionFields();
+          graphOptions     = generateGraph(graphOptions, equation);
+
+        }else if ( equation == "" && inverseEq != ""){ // só digitou lei da inversa
+          alert("Campo da lei da função não pode ficar em branco.")
+        }else { // digitou os dois campos
+
+          graphOptions = generateGraph(graphOptions, equation);
+          graphOptions = generateInverse(graphOptions, "#inverse-eq");
+          $("#inverse-result").css("display","block");
+        }
+
+        functionPlot(graphOptions);
+        derivative    = calculateDerivative(equation);
+
+      
+        UpdateMath(formatToTex(derivative),"derivada","derivative-result")
+        UpdateMath(formatToTex(equation),"funcao","function-result");
+        UpdateMath(formatToTex(inverseEq),"inversa", "inverse-result");
+                  
+        
+        
+        
+        clearFunctionFields();
 
 
       }else {
         // se sobrar tempo podemos usar o remodal pra mostrar um alerta mais bonito e user-friendly
         alert("Campo da lei da função não pode ficar em branco!")
-      }
-      
-      // console.log(`O resultado da derivada é: ${calculateDerivative(equation)}`);  
+      } 
     };
 
+    // ACTION: Submit no form de limite
     document.getElementById('limit-form').onsubmit = function (event) {
 
       event.preventDefault();
@@ -470,19 +570,23 @@
       fadeLimitOut();
 
       if(limitEq != ""){
-      
+        $("#limit-result").css("display","block");
         let xToLimit = limitEq.value;
         let limit = calculateLimit(equation, xToLimit); // calcula o limite
+        
 
-        if (typeof limit == "string"){
-          document.querySelector("#limit-result").textContent += limit;
-        }else{
-          document.querySelector("#limit-result").textContent += UpdateMath(xToLimit,"limite","limit-result")+" = "+limit;
-          ;
-        }
-        // console.log(`O resultado do limite é: ${limit}`);
+        // if (typeof limit == "string"){
+        //   document.querySelector("#limit-result").innerHTML += limit;
+        // }else{
+          
+          // UpdateLimit("limit-result",formatToTex(xToLimit));
+          document.querySelector("#limit-result").innerHTML =  "O resultado do limite é : "+limit;
+
+        $("#limit-result").css("display","block")
+
         clearLimitField();
       }else {
+        $("#limit-result").css("display","none")
         alert("Limite em branco, preencha o campo e tente novamente!");
       }
     }

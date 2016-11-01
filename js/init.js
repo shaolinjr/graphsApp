@@ -1,7 +1,9 @@
 (function($){
   $(function(){
 
-    $('.button-collapse').sideNav();
+    $('.button-collapse').sideNav({
+    	closeOnClick: true
+    });
     
   }); // end of document ready
 })(jQuery); // end of jQuery name space
@@ -46,6 +48,29 @@ jQuery(document).ready(function($) {
 			
 		});
 	});
+
+	if ($(window).width() < 700 && $(window).width() > 300){
+		// Modificações na DOM para adequar o layout do mobile
+
+		// Seção SOBRE
+		$("#sobre .main-row").css ({
+			"display": "flex",
+			"flex-direction": "column-reverse",
+			"flex-wrap": "nowrap"
+		});
+		$("#sobre .section-img-wrapper").removeClass('right-align');
+		$("#sobre .section-img-wrapper").addClass('center');
+
+		// Seção COMO FUNCIONA
+
+		$("#como-funciona .main-row").css ({
+			"display": "flex",
+			"flex-direction": "column",
+			"flex-wrap": "nowrap"
+		});
+		$("#como-funciona .section-img-wrapper").removeClass('left-align');
+		$("#como-funciona .section-img-wrapper").addClass('center');
+	}
 
 
 });

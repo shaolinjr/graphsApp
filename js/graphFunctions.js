@@ -23,6 +23,7 @@ function calculateLimit(equation, xToLimit) {
     // montamos o resultado
     result = numerador + "/" + denominador; //type string
     console.log("Resultado: " + result);
+
   } else {
     result = parser.eval("f(x)=" + equation);
 
@@ -35,7 +36,7 @@ function calculateLimit(equation, xToLimit) {
     }
   }
 
-  if (typeof result == "string" || !Number.isInteger(result)) {
+  if (result.toString().indexOf("0/0") == -1 && !Number.isInteger(result)) {
     // usar o Ratio
     result = Ratio.parse(result).simplify();
   } else if (isNaN(result)) {
@@ -47,11 +48,11 @@ function calculateLimit(equation, xToLimit) {
 }
 
 function calculateDerivative(equation, symbol) {
+  var derivative = null;
   try {
-    var derivative = nerdamer(`diff(${equation},x)`);
+    derivative = nerdamer(`diff(${equation},x)`);
   } catch (err) {
-    console.log("Unsupported function to calculate derivative")
-    return;
+    derivative = "Unsupported function to calculate derivative";
   }
 
   return derivative.toString();
